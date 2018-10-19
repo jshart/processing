@@ -1,15 +1,19 @@
   
 PVector v1, v2;
-int w=480;
-int h=240;
-int numBlobs=15;
+int w=640;
+int h=480;
+int numBlobs=30;
 Blob blobs[];
 int generations=0;
-int errorPercent=20;
-int breedingSize=5;
+int errorPercent=10;
+int breedingSize=10;
 
-void setup() {
-  size(480,240);
+int midW=w/2;
+int midH=h/2;
+
+public void setup() {
+  size(640, 480);
+
   //frameRate(10);
   
   blobs = new Blob[numBlobs];
@@ -17,18 +21,18 @@ void setup() {
   int i;
   for (i=0;i<numBlobs;i++)
   {
-    blobs[i] = new Blob();
+    blobs[i] = new Blob(midW,midH);
   }  
 }
 
-void draw() {
+public void draw() {
 
   int i;
 
-  boolean stillUpdating=true;
+  boolean stillUpdating=false;
   
-  stillUpdating=false;
-  
+
+   
   for (i=0;i<numBlobs;i++)
   {
     if (blobs[i].mRunning)
@@ -46,6 +50,8 @@ void draw() {
   // ready for next iteration
   if (stillUpdating==false)
   {
+      background(255,255,255);
+
     print("Generation run:"+generations++);
     
     BreedingPool bp = new BreedingPool(breedingSize);
@@ -87,10 +93,19 @@ public class BreedingPool
   {
     int i=0;
     
+    // if there is space simply add it
+    // as we only get picky once we've
+    // got at least a minimum to breed
+    // from
     if (mBlobsInPool < mPoolSize)
     {
       pool[mBlobsInPool]=b;
       mBlobsInPool++;
+      
+      // keep a rolling total of worse
+      // score in the pool as we'll use
+      // this as a measure for what to over
+      // write in future
       if (b.mFitness>mWorseScoreInPool)
       {
         mWorseScoreInPool = b.mFitness; 
@@ -98,6 +113,15 @@ public class BreedingPool
     }
     else
     {
+      // TODO - this is more looping than
+      // necessary, but written "simply"
+      // for now to aid debugging, come back
+      // and clean this up so its more elegant
+      
+      // we've run out of slots so now
+      // start to optimise the pool by
+      // replacing worse members with
+      // any new ones that are better.
       if (b.mFitness<mWorseScoreInPool)
       {
         // Find item to replace as this is better
@@ -107,14 +131,26 @@ public class BreedingPool
           if (pool[i].mFitness==mWorseScoreInPool)
           {
             pool[i]=b;
-            mWorseScoreInPool = b.mFitness;         
+          }
+        }
+        
+        // ineffecient - but a quick hack for now
+        // do a simple linear search now looking
+        // for the new worse case. This will tell
+        // us what to remove next time around
+        mWorseScoreInPool=0;
+        for (i=0;i<mPoolSize;i++)
+        {
+          if (pool[i].mFitness>mWorseScoreInPool)
+          {
+            mWorseScoreInPool = pool[i].mFitness;    
           }
         }
       }
     }
   }
   
-  void breed(Blob b[], int ps)
+  public void breed(Blob b[], int ps)
   {
     int i=0;
     int r1, r2;
@@ -125,7 +161,7 @@ public class BreedingPool
       
       r2=floor(random(mPoolSize));
       
-      b[i]=new Blob(pool[r1].mDna,pool[r2].mDna);
+      b[i]=new Blob(midW,midH,pool[r1].mDna,pool[r2].mDna);
     }
   }
 }
@@ -157,24 +193,24 @@ public class Blob
     return(mFitness);
   }
   
-  public Blob()
+  public Blob(int sx,int sy)
   {
-    x = 0;
-    y = 0;
+    x = sx;
+    y = sy;
     mDna = new Dna(20);
   }
 
-  public Blob(Dna d)
+  public Blob(int sx,int sy,Dna d)
   {
-    x = 0;
-    y = 0;
+    x = sx;
+    y = sy;
     mDna = new Dna(20,d);
   }
 
-  public Blob(Dna d1, Dna d2)
+  public Blob(int sx,int sy,Dna d1, Dna d2)
   {
-    x = 0;
-    y = 0;
+    x = sx;
+    y = sy;
     mDna = new Dna(20, d1, d2);
   }
 
