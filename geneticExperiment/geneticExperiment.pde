@@ -1,12 +1,13 @@
   
-PVector v1, v2;
 int w=640;
 int h=480;
-int numBlobs=30;
+int numBlobs=50;
+int numObstacles=50;
 Blob blobs[];
+Block obstacles[];
 int generations=0;
-int errorPercent=10;
-int breedingSize=10;
+int errorPercent=5;
+int breedingSize=6;
 
 int midW=w/2;
 int midH=h/2;
@@ -18,28 +19,54 @@ public void setup() {
   //frameRate(10);
   
   blobs = new Blob[numBlobs];
+  obstacles = new Block[numObstacles];
+
   
   int i;
   for (i=0;i<numBlobs;i++)
   {
     blobs[i] = new Blob(midW,midH);
   }  
+  
+  for (i=0;i<numObstacles;i++)
+  {
+    obstacles[i] = new Block(w,h);
+  }
 }
 
 public void draw() {
 
-  int i;
+  int i,j;
 
   boolean stillUpdating=false;
+  Block tempObstacle;
   
-  rect(obstacle.mX,obstacle.mY,obstacle.mW,obstacle.mH);
+  // Draw the obstacle
+  for (j=0;j<numObstacles;j++)
+  {
+    tempObstacle = obstacles[j];
+    rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
+  }
    
+  // Draw the blobs
   for (i=0;i<numBlobs;i++)
   {
     if (blobs[i].mRunning)
     {
       ellipse(blobs[i].x,blobs[i].y,10,5);
       blobs[i].updatePosition();
+        
+      for (j=0;j<numObstacles;j++)
+      {
+        tempObstacle = obstacles[j];
+        rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
+  
+        if (tempObstacle.contains(blobs[i].x, blobs[i].y)==true)
+        {
+          blobs[i].mRunning=false;
+        }
+      }
+      
       stillUpdating=true;
     }
   }  
@@ -51,9 +78,10 @@ public void draw() {
   // ready for next iteration
   if (stillUpdating==false)
   {
-      background(255,255,255);
+    background(255,255,255);
 
     print("Generation run:"+generations++);
+    print(" Blobs:"+numBlobs);
     
     BreedingPool bp = new BreedingPool(breedingSize);
 
@@ -182,7 +210,24 @@ public class Block
     mH=20;
   }
   
-  public boolean contains(x,y);
+  public Block(int maxX, int maxY)
+  {
+    mX=floor(random(maxX));
+    mY=floor(random(maxY));
+    mW=20;
+    mH=20;
+  }
+  
+  public boolean contains(int x,int y)
+  {
+    if ((x>mX && x<(mX+mW)) && (y>mY && y< (mY+mH)))
+    {
+      return(true);
+    }
+    return(false);
+  }
+  
+  public boolean contains(float x,float y)
   {
     if ((x>mX && x<(mX+mW)) && (y>mY && y< (mY+mH)))
     {
@@ -373,11 +418,6 @@ class Gene
     if (r1<errorPercent)
     {
       xDelta = floor(random(50))-25;
-    }
-
-    r1=floor(random(100));    
-    if (r1<errorPercent)
-    {
       yDelta = floor(random(50))-25;
     }
   }
