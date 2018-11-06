@@ -11,6 +11,11 @@ int breedingSize=6;
 
 int midW=w/2;
 int midH=h/2;
+int startX=0;
+int startY=midH;
+int targetX=w;
+int targetY=midH;
+
 Block obstacle=new Block();
 
 public void setup() {
@@ -25,13 +30,15 @@ public void setup() {
   int i;
   for (i=0;i<numBlobs;i++)
   {
-    blobs[i] = new Blob(midW,midH);
+    blobs[i] = new Blob(startX,startY);
   }  
   
   for (i=0;i<numObstacles;i++)
   {
     obstacles[i] = new Block(w,h);
   }
+  background(255,255,255);
+  noStroke(); 
 }
 
 public void draw() {
@@ -41,26 +48,31 @@ public void draw() {
   boolean stillUpdating=false;
   Block tempObstacle;
   
+  fill(100, 100, 100);
   // Draw the obstacle
   for (j=0;j<numObstacles;j++)
   {
     tempObstacle = obstacles[j];
-    rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
+
+    //rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
   }
    
+  fill(250-(generations*5), 250-(generations*5), 250-(generations*5));
+  //fill(0, 0, 255-(generations*5));
+  
   // Draw the blobs
   for (i=0;i<numBlobs;i++)
   {
     if (blobs[i].mRunning)
     {
-      ellipse(blobs[i].x,blobs[i].y,10,5);
+      //ellipse(blobs[i].x,blobs[i].y,10,5);
+      ellipse(blobs[i].x,blobs[i].y,1,1);
+
       blobs[i].updatePosition();
         
       for (j=0;j<numObstacles;j++)
       {
-        tempObstacle = obstacles[j];
-        rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
-  
+        tempObstacle = obstacles[j]; 
         if (tempObstacle.contains(blobs[i].x, blobs[i].y)==true)
         {
           blobs[i].mRunning=false;
@@ -78,7 +90,7 @@ public void draw() {
   // ready for next iteration
   if (stillUpdating==false)
   {
-    background(255,255,255);
+    //background(255,255,255);
 
     print("Generation run:"+generations++);
     print(" Blobs:"+numBlobs);
@@ -88,7 +100,7 @@ public void draw() {
     for (i=0;i<numBlobs;i++)
     {
       // Update the final fitness
-      averageFitness+=blobs[i].fitness(w,h);
+      averageFitness+=blobs[i].fitness(targetX,targetY);
       
       if (blobs[i].mFitness<bestFitness)
       {
@@ -190,7 +202,7 @@ public class BreedingPool
       
       r2=floor(random(mPoolSize));
       
-      b[i]=new Blob(midW,midH,pool[r1].mDna,pool[r2].mDna);
+      b[i]=new Blob(startX,startY,pool[r1].mDna,pool[r2].mDna);
     }
   }
 }
@@ -212,7 +224,8 @@ public class Block
   
   public Block(int maxX, int maxY)
   {
-    mX=floor(random(maxX));
+    mX=floor(random(maxX-30))+15;
+    //mY=floor(random(maxY-100))+100;
     mY=floor(random(maxY));
     mW=20;
     mH=20;
@@ -220,7 +233,7 @@ public class Block
   
   public boolean contains(int x,int y)
   {
-    if ((x>mX && x<(mX+mW)) && (y>mY && y< (mY+mH)))
+    if ((x>=mX && x<=(mX+mW)) && (y>=mY && y<=(mY+mH)))
     {
       return(true);
     }
@@ -229,7 +242,7 @@ public class Block
   
   public boolean contains(float x,float y)
   {
-    if ((x>mX && x<(mX+mW)) && (y>mY && y< (mY+mH)))
+    if ((x>=mX && x<=(mX+mW)) && (y>=mY && y<=(mY+mH)))
     {
       return(true);
     }
@@ -248,6 +261,7 @@ public class Blob
   float yDelta;
   boolean mRunning=true;
   int mFitness=0;
+  int numGenes=30;
 
   public String toString()
   {
@@ -267,21 +281,21 @@ public class Blob
   {
     x = sx;
     y = sy;
-    mDna = new Dna(20);
+    mDna = new Dna(numGenes);
   }
 
   public Blob(int sx,int sy,Dna d)
   {
     x = sx;
     y = sy;
-    mDna = new Dna(20,d);
+    mDna = new Dna(numGenes,d);
   }
 
   public Blob(int sx,int sy,Dna d1, Dna d2)
   {
     x = sx;
     y = sy;
-    mDna = new Dna(20, d1, d2);
+    mDna = new Dna(numGenes, d1, d2);
   }
 
   
@@ -401,10 +415,17 @@ class Gene
   int xDelta;
   int yDelta;
   
+  int mMaxDist=100;
+  
+  public int randomDist(int d)
+  {
+    return(floor(random(d))-(d/2));
+  }
+  
   public Gene()
   {
-    xDelta = floor(random(50))-25;
-    yDelta = floor(random(50))-25;
+    xDelta = randomDist(mMaxDist);
+    yDelta = randomDist(mMaxDist);
   }
   
   public Gene(Gene g)
@@ -417,8 +438,8 @@ class Gene
     r1=floor(random(100));    
     if (r1<errorPercent)
     {
-      xDelta = floor(random(50))-25;
-      yDelta = floor(random(50))-25;
+      xDelta = randomDist(mMaxDist);
+      yDelta = randomDist(mMaxDist);
     }
   }
 }
