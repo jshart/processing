@@ -10,6 +10,7 @@ int breedingSize=10;
 
 int midW=w/2;
 int midH=h/2;
+Block obstacle=new Block();
 
 public void setup() {
   size(640, 480);
@@ -31,7 +32,7 @@ public void draw() {
 
   boolean stillUpdating=false;
   
-
+  rect(obstacle.mX,obstacle.mY,obstacle.mW,obstacle.mH);
    
   for (i=0;i<numBlobs;i++)
   {
@@ -166,6 +167,30 @@ public class BreedingPool
   }
 }
 
+public class Block
+{
+  int mX;
+  int mY;
+  int mW;
+  int mH;
+  
+  public Block()
+  {
+    mX=400;
+    mY=250;
+    mW=20;
+    mH=20;
+  }
+  
+  public boolean contains(x,y);
+  {
+    if ((x>mX && x<(mX+mW)) && (y>mY && y< (mY+mH)))
+    {
+      return(true);
+    }
+    return(false);
+  }
+}
 
 public class Blob
 {
@@ -324,8 +349,6 @@ class Dna
       }
     }
   }
-
-
 }
 
 class Gene
