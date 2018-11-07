@@ -25,7 +25,6 @@ public void setup() {
   
   blobs = new Blob[numBlobs];
   obstacles = new Block[numObstacles];
-
   
   int i;
   for (i=0;i<numBlobs;i++)
@@ -33,10 +32,24 @@ public void setup() {
     blobs[i] = new Blob(startX,startY);
   }  
   
+  int ox,oy;
   for (i=0;i<numObstacles;i++)
   {
-    obstacles[i] = new Block(w,h);
+    //obstacles[i] = new Block(w,h);
+    
+    obstacles[i] = new Block();
+    ox=1+(i % 10);
+    oy=1+(i / 5);
+    
+    ox *= 40;
+    oy *= 40;
+    
+    ox+=100;
+    oy+=10;
+    
+    obstacles[i].setPosition(ox,oy);
   }
+  
   background(255,255,255);
   noStroke(); 
 }
@@ -54,7 +67,7 @@ public void draw() {
   {
     tempObstacle = obstacles[j];
 
-    //rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
+    rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
   }
    
   fill(250-(generations*5), 250-(generations*5), 250-(generations*5));
@@ -76,6 +89,7 @@ public void draw() {
         if (tempObstacle.contains(blobs[i].x, blobs[i].y)==true)
         {
           blobs[i].mRunning=false;
+          break;
         }
       }
       
@@ -221,6 +235,14 @@ public class Block
     mW=20;
     mH=20;
   }
+
+  public Block(int x, int y, int w, int h)
+  {
+    mX=x;
+    mY=y;
+    mW=w;
+    mH=h;
+  }
   
   public Block(int maxX, int maxY)
   {
@@ -229,6 +251,12 @@ public class Block
     mY=floor(random(maxY));
     mW=20;
     mH=20;
+  }
+  
+  public void setPosition(int x, int y)
+  {
+    mX=x;
+    mY=y;
   }
   
   public boolean contains(int x,int y)
