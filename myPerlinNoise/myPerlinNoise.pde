@@ -1,5 +1,5 @@
 double cells[][];
-int cols=1280;
+int cols=640;
 int rows=640;
 
 ImprovedNoise pNoise;
@@ -11,7 +11,7 @@ double valueRange=0;
   
 void setup()
 {
-  size(1280, 640);
+  size(640, 640);
   cells=new double[cols][rows];
   pNoise = new ImprovedNoise();
 
@@ -20,18 +20,21 @@ void setup()
   int i,j;
 
   
-  for (i=0;i<1280;i++)
+  for (i=0;i<cols;i++)
   {
-    for (j=0;j<640;j++)
+    for (j=0;j<rows;j++)
     {
     //print(cells[i][0]+" ");
       minValue=(cells[i][j]<minValue)?cells[i][j]:minValue;
       maxValue=(cells[i][j]>maxValue)?cells[i][j]:maxValue;
     }
   }
-  print("min/max: "+minValue+":"+maxValue);
+  println("min/max: "+minValue+":"+maxValue);
 }
 
+int waterLine=100;
+int treeLine=120;
+int climateStep=2;
 
 void draw()
 {
@@ -39,26 +42,34 @@ void draw()
   double mappedColour;
   
   valueRange=maxValue-minValue;
+  println("valueRange:"+valueRange);
+  
+  //waterLine=(waterLine<100?waterLine+5:waterLine);
+  waterLine=(waterLine>0?waterLine-climateStep:waterLine);
+  treeLine=(treeLine<200?treeLine+climateStep:treeLine);
+
   
   for (i=0;i<cols;i++)
   {
     for (j=0;j<rows;j++)
     {
       mappedColour=(cells[i][j]+Math.abs(minValue))*(255/valueRange);
-      
-      if (mappedColour<100)
+          
+      if (mappedColour<waterLine)
       {
-        //stroke(0,floor((float)mappedColour),255-floor((float)mappedColour));
         stroke(0,0,floor((float)mappedColour)+125);
       }
-      else if (mappedColour<110)
+      else if (mappedColour<treeLine)
       {
-                stroke(255-floor((float)mappedColour),255-floor((float)mappedColour),0);
+        stroke(75+floor((float)mappedColour),75+floor((float)mappedColour),0);
+      }
+      else if(mappedColour<220)
+      {
+        stroke(0,255-floor((float)mappedColour),0);
       }
       else
       {
-        //stroke(0,255-floor((float)mappedColour),floor((float)mappedColour));
-        stroke(0,255-floor((float)mappedColour),0);
+        stroke(floor((float)mappedColour)-150,floor((float)mappedColour)-150,floor((float)mappedColour)-150);
       }
       
       //stroke(0,0,floor((float)mappedColour));
@@ -107,23 +118,23 @@ public  class ImprovedNoise {
        for (int i=0; i < 256 ; i++) p[256+i] = p[i] = permutation[i];
     }
   
-  // peiced together from; https://flafla2.github.io/2014/08/09/perlinnoise.html
-  public double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
-    double total = 0;
-    double frequency = 1;
-    double amplitude = 1;
-    double maxValue = 0;  // Used for normalizing result to 0.0 - 1.0
-    for(int i=0;i<octaves;i++) {
-        total += noise(x * frequency, y * frequency, z * frequency) * amplitude;
-        
-        maxValue += amplitude;
-        
-        amplitude *= persistence;
-        frequency *= 2;
+    // peiced together from; https://flafla2.github.io/2014/08/09/perlinnoise.html
+    public double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
+      double total = 0;
+      double frequency = 1;
+      double amplitude = 1;
+      double maxValue = 0;  // Used for normalizing result to 0.0 - 1.0
+      for(int i=0;i<octaves;i++) {
+          total += noise(x * frequency, y * frequency, z * frequency) * amplitude;
+          
+          maxValue += amplitude;
+          
+          amplitude *= persistence;
+          frequency *= 2;
+      }
+      
+      return total/maxValue;
     }
-    
-    return total/maxValue;
-}
   
     public double noise(double x, double y, double z) {
       int X = (int)Math.floor(x) & 255,                  // FIND UNIT CUBE THAT
