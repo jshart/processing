@@ -83,7 +83,7 @@ public class BreedingPool
       
       r2=floor(random(mPoolSize));
       
-      b[i]=new Blob(startX,startY,pool[r1].mDna,pool[r2].mDna);
+      b[i]=new Blob(pool[r1].mStartX,pool[r1].mStartY,pool[r1].mDna,pool[r2].mDna);
     }
   }
 }

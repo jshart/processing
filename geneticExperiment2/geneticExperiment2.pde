@@ -1,35 +1,39 @@
-  
-int w=640;
-int h=480;
-int numBlobs=50;
 int numObstacles=50;
 Block obstacles[];
-int generations=0;
-int errorPercent=5;
-int breedingSize=6;
+Block obstacle=new Block();
 
+int breedingSize=6;
+Population populations[];
+int popSize=4;
+
+int w=640;
+int h=480;
 int midW=w/2;
 int midH=h/2;
 int startX=0;
 int startY=midH;
-int targetX=w;
-int targetY=midH;
 
-Block obstacle=new Block();
 
 public void setup() {
   size(640, 480);
-
-  //frameRate(10);
-  
-  blobs = new Blob[numBlobs];
-  obstacles = new Block[numObstacles];
-  
   int i;
-  for (i=0;i<numBlobs;i++)
-  {
-    blobs[i] = new Blob(startX,startY);
-  }  
+  
+  populations = new Population[popSize];
+  
+  populations[0]= new Population(20,50,0,0,midW,midH);
+  populations[0].setBaseColour(255,255,255);
+  
+  populations[1]= new Population(20,50,640,0,midW,midH);
+  populations[1].setBaseColour(255,0,0);
+
+  populations[2]= new Population(20,50,0,480,midW,midH);
+  populations[2].setBaseColour(0,255,0);
+  
+  populations[3]= new Population(20,50,640,480,midW,midH);
+  populations[3].setBaseColour(0,0,255);
+
+  
+  obstacles = new Block[numObstacles];
   
   int ox,oy;
   for (i=0;i<numObstacles;i++)
@@ -55,9 +59,8 @@ public void setup() {
 
 public void draw() {
 
-  int i,j;
+  int i,j,k;
 
-  boolean stillUpdating=false;
   Block tempObstacle;
   
   fill(100, 100, 100);
@@ -69,63 +72,78 @@ public void draw() {
     rect(tempObstacle.mX,tempObstacle.mY,tempObstacle.mW,tempObstacle.mH);
   }
    
-  fill(250-(generations*5), 250-(generations*5), 250-(generations*5));
   //fill(0, 0, 255-(generations*5));
   
-  // Draw the blobs
-  for (i=0;i<numBlobs;i++)
+  for (k=0;k<popSize;k++)
   {
-    if (blobs[i].mRunning)
-    {
-      //ellipse(blobs[i].x,blobs[i].y,10,5);
-      ellipse(blobs[i].x,blobs[i].y,1,1);
-
-      blobs[i].updatePosition();
-        
-      for (j=0;j<numObstacles;j++)
-      {
-        tempObstacle = obstacles[j]; 
-        if (tempObstacle.contains(blobs[i].x, blobs[i].y)==true)
-        {
-          blobs[i].mRunning=false;
-          break;
-        }
-      }
-      
-      stillUpdating=true;
-    }
-  }  
-
-  int averageFitness=0;
-  int bestFitness=10000;
-  
-  // Generation has run to completion, update generation
-  // ready for next iteration
-  if (stillUpdating==false)
-  {
-    //background(255,255,255);
-
-    print("Generation run:"+generations++);
-    print(" Blobs:"+numBlobs);
+    int numBlobs = populations[k].mMaxPop;
     
-    BreedingPool bp = new BreedingPool(breedingSize);
+    fill(populations[k].getCurrentRed(), populations[k].getCurrentGreen(), populations[k].getCurrentBlue());
+    //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
 
+    populations[k].stillUpdating=false;
+    
+    // Draw the blobs
     for (i=0;i<numBlobs;i++)
     {
-      // Update the final fitness
-      averageFitness+=blobs[i].fitness(targetX,targetY);
-      
-      if (blobs[i].mFitness<bestFitness)
+      if (populations[k].mBlobs[i].mRunning)
       {
-        bestFitness = blobs[i].mFitness;
+        //ellipse(blobs[i].x,blobs[i].y,10,5);
+        ellipse(populations[k].mBlobs[i].x,populations[k].mBlobs[i].y,1,1);
+  
+        populations[k].mBlobs[i].updatePosition();
+          
+        for (j=0;j<numObstacles;j++)
+        {
+          tempObstacle = obstacles[j]; 
+          if (tempObstacle.contains(populations[k].mBlobs[i].x, populations[k].mBlobs[i].y)==true)
+          {
+            populations[k].mBlobs[i].mRunning=false;
+            break;
+          }
+        }
+        
+        populations[k].stillUpdating=true;
       }
-      
-      // Add the best blobs to the breedingpool
-      bp.add(blobs[i]);
-    } 
-    print(" bestFitness="+bestFitness);
-    print(" averageFitness="+(averageFitness/numBlobs)+"\n");
+    }  
+  }
+  
+  
+  for (k=0;k<popSize;k++)
+  {  
+    int averageFitness=0;
+    int bestFitness=10000;
+    int numBlobs = populations[k].mMaxPop;
 
-    bp.breed(blobs, numBlobs);   
+    
+    // Generation has run to completion, update generation
+    // ready for next iteration
+    if (populations[k].stillUpdating==false)
+    {
+      //background(255,255,255);
+  
+      print("Population:"+k+" Generation run:"+populations[k].mCurrentGen++);
+      print(" Blobs:"+numBlobs);
+      
+      BreedingPool bp = new BreedingPool(breedingSize);
+  
+      for (i=0;i<numBlobs;i++)
+      {
+        // Update the final fitness
+        averageFitness+=populations[k].mBlobs[i].fitness(populations[k].mTargetX,populations[k].mTargetY);
+        
+        if (populations[k].mBlobs[i].mFitness<bestFitness)
+        {
+          bestFitness = populations[k].mBlobs[i].mFitness;
+        }
+        
+        // Add the best blobs to the breedingpool
+        bp.add(populations[k].mBlobs[i]);
+      } 
+      print(" bestFitness="+bestFitness);
+      print(" averageFitness="+(averageFitness/numBlobs)+"\n");
+  
+      bp.breed(populations[k].mBlobs, numBlobs);   
+    }
   }
 }

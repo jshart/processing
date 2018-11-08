@@ -1,6 +1,8 @@
 public class Blob
 {
   Dna mDna;
+  int mStartX;
+  int mStartY;
   float x;
   float y;
 
@@ -18,8 +20,8 @@ public class Blob
 
   public int fitness(int w, int h)
   {
-    int wDelta = w-floor(x);
-    int hDelta = h-floor(y);
+    int wDelta = Math.abs(w-floor(x));
+    int hDelta = Math.abs(h-floor(y));
     
     mFitness = floor(sqrt((wDelta*wDelta)+(hDelta*hDelta)));
     return(mFitness);
@@ -27,6 +29,8 @@ public class Blob
   
   public Blob(int sx,int sy)
   {
+    mStartX=sx;
+    mStartY=sy;
     x = sx;
     y = sy;
     mDna = new Dna(numGenes);
@@ -34,6 +38,8 @@ public class Blob
 
   public Blob(int sx,int sy,Dna d)
   {
+    mStartX=sx;
+    mStartY=sy;
     x = sx;
     y = sy;
     mDna = new Dna(numGenes,d);
@@ -41,6 +47,8 @@ public class Blob
 
   public Blob(int sx,int sy,Dna d1, Dna d2)
   {
+    mStartX=sx;
+    mStartY=sy;
     x = sx;
     y = sy;
     mDna = new Dna(numGenes, d1, d2);

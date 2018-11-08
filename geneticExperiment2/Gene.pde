@@ -4,7 +4,8 @@ class Gene
   int yDelta;
   
   int mMaxDist=100;
-  
+  int errorPercent=5;
+
   public int randomDist(int d)
   {
     return(floor(random(d))-(d/2));
