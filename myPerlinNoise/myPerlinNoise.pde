@@ -4,6 +4,11 @@ int rows=640;
 
 ImprovedNoise pNoise;
 
+
+double maxValue=-1;
+double minValue=1;
+double valueRange=0;
+  
 void setup()
 {
   size(1280, 640);
@@ -12,21 +17,48 @@ void setup()
 
   pNoise();
   
-  int i;
+  int i,j;
+
+  
   for (i=0;i<1280;i++)
-    print(cells[i][0]+" ");
+  {
+    for (j=0;j<640;j++)
+    {
+    //print(cells[i][0]+" ");
+      minValue=(cells[i][j]<minValue)?cells[i][j]:minValue;
+      maxValue=(cells[i][j]>maxValue)?cells[i][j]:maxValue;
+    }
+  }
+  print("min/max: "+minValue+":"+maxValue);
 }
 
 
 void draw()
 {
   int i,j;
+  double mappedColour;
+  
+  valueRange=maxValue-minValue;
   
   for (i=0;i<cols;i++)
   {
     for (j=0;j<rows;j++)
     {
-      stroke(floor((float)cells[i][j]));
+      mappedColour=(cells[i][j]+Math.abs(minValue))*(255/valueRange);
+      
+      if (mappedColour<100)
+      {
+        //stroke(0,floor((float)mappedColour),255-floor((float)mappedColour));
+        stroke(0,0,floor((float)mappedColour)+125);
+      }
+      else
+      {
+        //stroke(0,255-floor((float)mappedColour),floor((float)mappedColour));
+        stroke(0,255-floor((float)mappedColour),0);
+      }
+      
+      //stroke(0,0,floor((float)mappedColour));
+      
       point(i,j);
     }
   }
@@ -37,13 +69,13 @@ void pNoise()
   int i,j;
   int rgb;
   
-  double scale=100;
+  double scale=50;
   
   for (i=0;i<cols;i++)
   {
     for (j=0;j<rows;j++)
     {
-      cells[i][j]=pNoise.noise((j+100)/scale,(i+100)/scale,0)*255;
+      cells[i][j]=pNoise.noise((j+10)/scale,(i+10)/scale,0);
     }
   }
 }
