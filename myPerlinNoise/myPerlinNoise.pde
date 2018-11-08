@@ -51,6 +51,10 @@ void draw()
         //stroke(0,floor((float)mappedColour),255-floor((float)mappedColour));
         stroke(0,0,floor((float)mappedColour)+125);
       }
+      else if (mappedColour<110)
+      {
+                stroke(255-floor((float)mappedColour),255-floor((float)mappedColour),0);
+      }
       else
       {
         //stroke(0,255-floor((float)mappedColour),floor((float)mappedColour));
@@ -69,13 +73,13 @@ void pNoise()
   int i,j;
   int rgb;
   
-  double scale=50;
+  double scale=200;
   
   for (i=0;i<cols;i++)
   {
     for (j=0;j<rows;j++)
     {
-      cells[i][j]=pNoise.noise((j+10)/scale,(i+10)/scale,0);
+      cells[i][j]=pNoise.OctavePerlin((j+10)/scale,(i+10)/scale,0,4,0.5);
     }
   }
 }
@@ -102,6 +106,24 @@ public  class ImprovedNoise {
     {
        for (int i=0; i < 256 ; i++) p[256+i] = p[i] = permutation[i];
     }
+  
+  // peiced together from; https://flafla2.github.io/2014/08/09/perlinnoise.html
+  public double OctavePerlin(double x, double y, double z, int octaves, double persistence) {
+    double total = 0;
+    double frequency = 1;
+    double amplitude = 1;
+    double maxValue = 0;  // Used for normalizing result to 0.0 - 1.0
+    for(int i=0;i<octaves;i++) {
+        total += noise(x * frequency, y * frequency, z * frequency) * amplitude;
+        
+        maxValue += amplitude;
+        
+        amplitude *= persistence;
+        frequency *= 2;
+    }
+    
+    return total/maxValue;
+}
   
     public double noise(double x, double y, double z) {
       int X = (int)Math.floor(x) & 255,                  // FIND UNIT CUBE THAT
