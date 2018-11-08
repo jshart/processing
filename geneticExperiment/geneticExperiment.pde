@@ -35,9 +35,9 @@ public void setup() {
   int ox,oy;
   for (i=0;i<numObstacles;i++)
   {
-    //obstacles[i] = new Block(w,h);
+    obstacles[i] = new Block(w,h);
     
-    obstacles[i] = new Block();
+    /*obstacles[i] = new Block();
     ox=1+(i % 10);
     oy=1+(i / 5);
     
@@ -47,7 +47,7 @@ public void setup() {
     ox+=100;
     oy+=10;
     
-    obstacles[i].setPosition(ox,oy);
+    obstacles[i].setPosition(ox,oy);*/
   }
   
   background(255,255,255);
