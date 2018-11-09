@@ -47,7 +47,7 @@ class Population
     }
     
     r=(mBaseR/mMaxGen)*mCurrentGen;
-    if (mCurrentGen<40)
+    if (mCurrentGen<45)
     {
       return(255-r);
     }
@@ -66,7 +66,7 @@ class Population
     }
     
     g=(mBaseG/mMaxGen)*mCurrentGen;
-    if (mCurrentGen<40)
+    if (mCurrentGen<45)
     {
       return(255-g);
     }
@@ -85,7 +85,7 @@ class Population
     }    
     
     b=(mBaseB/mMaxGen)*mCurrentGen;
-    if (mCurrentGen<40)
+    if (mCurrentGen<45)
     {
       return(255-b);
     }

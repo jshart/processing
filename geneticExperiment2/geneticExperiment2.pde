@@ -44,9 +44,9 @@ public void setup() {
   int ox,oy;
   for (i=0;i<numObstacles;i++)
   {
-    obstacles[i] = new Block(w,h);
+    //obstacles[i] = new Block(w,h);
     
-    /*obstacles[i] = new Block();
+    obstacles[i] = new Block();
     ox=1+(i % 10);
     oy=1+(i / 5);
     
@@ -56,7 +56,7 @@ public void setup() {
     ox+=100;
     oy+=10;
     
-    obstacles[i].setPosition(ox,oy);*/
+    obstacles[i].setPosition(ox,oy);
   }
 
 }
@@ -81,6 +81,12 @@ public void draw() {
   for (k=0;k<popSize;k++)
   {
     int numBlobs = populations[k].mMaxPop;
+    
+    // IF this population has hit the generation limit, bail
+    if (populations[k].mCurrentGen>populations[k].mMaxGen)
+    {
+      break;
+    }
     
     fill(255,0,0);
     ellipse(populations[k].mStartX,populations[k].mStartY,10,10);
@@ -122,6 +128,11 @@ public void draw() {
     int bestFitness=10000;
     int numBlobs = populations[k].mMaxPop;
 
+    // IF this population has hit the generation limit, bail
+    if (populations[k].mCurrentGen>populations[k].mMaxGen)
+    {
+      break;
+    }
     
     // Generation has run to completion, update generation
     // ready for next iteration
