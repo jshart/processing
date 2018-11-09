@@ -11,6 +11,11 @@ public class BreedingPool
     mPoolSize=poolSize;    
   }
   
+
+// TODO - need to clean this up to fix the hacks and
+// to allow prioritisation based on more than one
+// factor - primary (e.g. linearDistance) and secondary
+// (e.g. effeciency)
   public void add(Blob b)
   {
     int i=0;

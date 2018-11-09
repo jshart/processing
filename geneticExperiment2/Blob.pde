@@ -34,7 +34,8 @@ public class Blob
     weightedTravelDistance = mDna.mTotalDistance/linearDistance;
     
     // add the 2 together to make overall fitness (low is best).
-    mFitness = linearDistance + weightedTravelDistance;
+    //mFitness = linearDistance + weightedTravelDistance;
+    mFitness=linearDistance;
     return(mFitness);
   }
   

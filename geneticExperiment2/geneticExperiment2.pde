@@ -1,10 +1,10 @@
-int numObstacles=50;
+int numObstacles=0;
 Block obstacles[];
 Block obstacle=new Block();
 
 int breedingSize=6;
 Population populations[];
-int popSize=6;
+int popSize=1;
 Loci cities;
 
 int w=720;
@@ -31,11 +31,14 @@ public void setup() {
   stroke(255,0,0);
   for (i=0;i<popSize;i++)
   {
-    fromCity = cities.mLocus[i];
-    toCity = cities.randomLocus(i);
-    populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
+    //fromCity = cities.mLocus[i];
+    //toCity = cities.randomLocus(i);
+    //populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
     
-    line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
+    populations[i]= new Population(50,50,0,midH,w,midH); 
+
+    
+    //line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
   }
 
   
@@ -109,6 +112,7 @@ public void draw() {
         for (j=0;j<numObstacles;j++)
         {
           tempObstacle = obstacles[j]; 
+          
           if (tempObstacle.contains(populations[k].mBlobs[i].x, populations[k].mBlobs[i].y)==true)
           {
             populations[k].mBlobs[i].mRunning=false;
@@ -143,6 +147,8 @@ public void draw() {
       print("Population:"+k+" Generation run:"+populations[k].mCurrentGen++);
       print(" Blobs:"+numBlobs);
       
+// TODO - lets move BreedingPool into Population, so we can clean up draw(), and allow
+// a breedpool to be specific to a population.
       BreedingPool bp = new BreedingPool(breedingSize);
   
       for (i=0;i<numBlobs;i++)
