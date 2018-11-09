@@ -2,6 +2,7 @@ class Dna
 {
   Gene[] mGenes;
   int mGenomeLen;
+  int mTotalDistance=0;
   
   // Just by calling this constructor we've
   // created n random genes (Each gene
@@ -16,6 +17,7 @@ class Dna
     for (i=0;i<numGenes;i++)
     {
       mGenes[i] = new Gene();
+      mTotalDistance+=mGenes[i].travelDistance;
     }    
   }
 
@@ -30,6 +32,7 @@ class Dna
     for (i=0;i<numGenes;i++)
     {
       mGenes[i] = new Gene(d.mGenes[i]);
+      mTotalDistance+=mGenes[i].travelDistance;
     }
   }
 
@@ -53,6 +56,7 @@ class Dna
       {
         mGenes[i] = new Gene(d2.mGenes[i]);
       }
+      mTotalDistance+=mGenes[i].travelDistance;
     }
   }
 }

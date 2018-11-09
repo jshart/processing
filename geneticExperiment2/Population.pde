@@ -47,7 +47,14 @@ class Population
     }
     
     r=(mBaseR/mMaxGen)*mCurrentGen;
-    return(255-r);
+    if (mCurrentGen<40)
+    {
+      return(255-r);
+    }
+    else
+    {
+      return(255);
+    }
   }
 
   public int getCurrentGreen()
@@ -59,7 +66,14 @@ class Population
     }
     
     g=(mBaseG/mMaxGen)*mCurrentGen;
-    return(255-g);
+    if (mCurrentGen<40)
+    {
+      return(255-g);
+    }
+    else
+    {
+      return(0);
+    }
   }
   
   public int getCurrentBlue()
@@ -71,6 +85,13 @@ class Population
     }    
     
     b=(mBaseB/mMaxGen)*mCurrentGen;
-    return(255-b);
+    if (mCurrentGen<40)
+    {
+      return(255-b);
+    }
+    else
+    {
+      return(0);
+    }
   }
 }

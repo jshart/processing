@@ -19,9 +19,13 @@ class Loci
     }
   }
   
-  public Locus randomLocus()
+  public Locus randomLocus(int exclude)
   {
-    int i = floor(random(mLocusSize));
+    int i;
+    do
+    {
+      i = floor(random(mLocusSize));
+    } while (i==exclude);
     
     return(mLocus[i]);
   }

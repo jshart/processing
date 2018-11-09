@@ -1,4 +1,4 @@
-int numObstacles=0;
+int numObstacles=50;
 Block obstacles[];
 Block obstacle=new Block();
 
@@ -7,8 +7,8 @@ Population populations[];
 int popSize=6;
 Loci cities;
 
-int w=640;
-int h=480;
+int w=720;
+int h=720;
 int midW=w/2;
 int midH=h/2;
 int startX=0;
@@ -16,9 +16,9 @@ int startY=midH;
 
 
 public void setup() {
-  size(640, 480);
+  size(720, 720);
   background(255,255,255);
-  noStroke(); 
+  //noStroke(); 
   
   int i;
     
@@ -28,11 +28,14 @@ public void setup() {
   
   Locus fromCity, toCity;
   
+  stroke(255,0,0);
   for (i=0;i<popSize;i++)
   {
     fromCity = cities.mLocus[i];
-    toCity = cities.randomLocus();
-    populations[i]= new Population(20,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
+    toCity = cities.randomLocus(i);
+    populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
+    
+    line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
   }
 
   
@@ -82,7 +85,7 @@ public void draw() {
     fill(255,0,0);
     ellipse(populations[k].mStartX,populations[k].mStartY,10,10);
     
-    fill(populations[k].getCurrentRed(), populations[k].getCurrentGreen(), populations[k].getCurrentBlue());
+    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(), populations[k].getCurrentBlue());
     //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
 
     populations[k].stillUpdating=false;
@@ -93,7 +96,7 @@ public void draw() {
       if (populations[k].mBlobs[i].mRunning)
       {
         //ellipse(blobs[i].x,blobs[i].y,10,5);
-        ellipse(populations[k].mBlobs[i].x,populations[k].mBlobs[i].y,1,1);
+        point(populations[k].mBlobs[i].x,populations[k].mBlobs[i].y);
   
         populations[k].mBlobs[i].updatePosition();
           
