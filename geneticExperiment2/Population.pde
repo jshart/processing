@@ -47,7 +47,7 @@ class Population
     }
     
     r=(mBaseR/mMaxGen)*mCurrentGen;
-    return(r);
+    return(255-r);
   }
 
   public int getCurrentGreen()
@@ -59,7 +59,7 @@ class Population
     }
     
     g=(mBaseG/mMaxGen)*mCurrentGen;
-    return(g);
+    return(255-g);
   }
   
   public int getCurrentBlue()
@@ -71,6 +71,6 @@ class Population
     }    
     
     b=(mBaseB/mMaxGen)*mCurrentGen;
-    return(b);
+    return(255-b);
   }
 }
