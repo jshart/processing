@@ -44,18 +44,10 @@ public class Blob implements Comparable<Blob>
     int wDelta = Math.abs(w-floor(x));
     int hDelta = Math.abs(h-floor(y));
     int linearDistance;
-    int weightedTravelDistance;
     
     // As the crow flies distance remaining to the target (low is better)
     linearDistance = floor(sqrt((wDelta*wDelta)+(hDelta*hDelta)));
     
-    // Distance we've actually travelled to get this close, divided
-    // by how close we are - gives us some measure of how "effecient"
-    // we are (low is better)
-    weightedTravelDistance = mDna.mTotalDistance/linearDistance;
-    
-    // add the 2 together to make overall fitness (low is best).
-    //mFitness = linearDistance + weightedTravelDistance;
     mFitness=linearDistance;
     return(mFitness);
   }

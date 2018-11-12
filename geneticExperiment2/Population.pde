@@ -55,6 +55,7 @@ class Population
     int totalFitness=0;
     int weight=0;
     int totalWeight=0;
+
     
     for (i=0;i<mBreedingSize;i++)
     {
@@ -64,14 +65,43 @@ class Population
       // Add the best blobs to the breedingpool
       mBPool.add(mBlobs[i]);
     }
+    
     print(" BP averageFitness="+(totalFitness/mBPool.mPoolSize)+"\n");
+    
     for (i=0;i<mBreedingSize;i++)
     {
-      weight = totalFitness/mBPool.mPool[i].mFitness;
+      weight = (mBPool.mPool[i].mFitness>0)?totalFitness/mBPool.mPool[i].mFitness:totalFitness;
       mBPool.mWeights[i] = weight;
       totalWeight+=weight;
     }
     mBPool.mTotalWeight = totalWeight;
+
+    
+    // The next section of code "tie break" any leading candidates
+    // that are the same. The one with the shortest path gets a bonus
+    int shortestDistance=100000;
+    int shortestDistanceIndex=0;
+    boolean favFound=false;
+    int bestWeight= mBPool.mWeights[shortestDistanceIndex];
+    
+    for (i=0;i<mBreedingSize;i++)
+    {
+      if ((mBPool.mWeights[shortestDistanceIndex] == bestWeight) && (mBPool.mPool[i].mDna.mTotalDistance<shortestDistance))
+      {
+        shortestDistance=mBPool.mPool[i].mDna.mTotalDistance;
+        shortestDistanceIndex=i;
+        favFound=true;
+      }
+    }
+
+ 
+    // for now 2 is hard-coded, simply as a way to provide some extra probability of reproducing to the best
+    // and shortest path
+    if (favFound)
+    {
+      mBPool.mWeights[shortestDistanceIndex]+=2;
+      mBPool.mTotalWeight+=2;
+    }
   }
   
   // TODO - all this colour code needs ripping out and reworking, the
@@ -99,7 +129,7 @@ class Population
     }
     else
     {
-      return(255);
+      return(mStartX % 255);
     }
   }
 
@@ -118,7 +148,7 @@ class Population
     }
     else
     {
-      return(0);
+      return(((mStartX+mStartY)/2) % 255);
     }
   }
   
@@ -137,9 +167,7 @@ class Population
     }
     else
     {
-      return(0);
+      return(mStartY % 255);
     }
   }
-  
-
 }

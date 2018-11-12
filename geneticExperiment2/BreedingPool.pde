@@ -1,6 +1,5 @@
 public class BreedingPool
 {
-  int mWorseScoreInPool=0;
   int mPoolSize=0;
   int mBlobsInPool=0;
   Blob mPool[];
@@ -16,8 +15,6 @@ public class BreedingPool
   
   public void add(Blob b)
   {
-
-    
     // if there is space simply add it
     // as we only get picky once we've
     // got at least a minimum to breed
@@ -76,11 +73,11 @@ public class BreedingPool
   
   public String toString()
   {
-    String s=new String("TW:"+mTotalWeight);
+    String s=new String("TW:"+mTotalWeight+"\n");
     int i;
     for (i=0;i<mPoolSize;i++)
     {
-      s+="BPi="+i+" F:"+mPool[i].mFitness+" W:"+mWeights[i]+"\n";
+      s+="BPi="+i+" F:"+mPool[i].mFitness+" W:"+mWeights[i]+" TD:"+mPool[i].mDna.mTotalDistance+"\n";
     }
     return(s);
   }

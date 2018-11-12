@@ -3,12 +3,12 @@ import java.util.Arrays;
 
 // geneticExperiment -*-> Population -*-> Blob -1-> Dna -*-> Gene
 
-int numObstacles=50;
+int numObstacles=0;
 Block obstacles[];
 Block obstacle=new Block();
 
 Population populations[];
-int numOfPops=8;
+int numOfPops=1;
 Loci cities;
 
 int w=720;
@@ -35,14 +35,14 @@ public void setup() {
   stroke(255,0,0);
   for (i=0;i<numOfPops;i++)
   {
-    fromCity = cities.mLocus[i];
-    toCity = cities.randomLocus(i);
-    populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
+    //fromCity = cities.mLocus[i];
+    //toCity = cities.randomLocus(i);
+    //populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
     
-    //populations[i]= new Population(50,50,0,midH,w,midH); 
+    populations[i]= new Population(50,50,0,midH,w,midH); 
 
     
-    line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
+    //line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
   }
 
   
