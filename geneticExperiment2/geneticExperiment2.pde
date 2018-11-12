@@ -3,13 +3,12 @@ import java.util.Arrays;
 
 // geneticExperiment -*-> Population -*-> Blob -1-> Dna -*-> Gene
 
-int numObstacles=0;
+int numObstacles=50;
 Block obstacles[];
 Block obstacle=new Block();
 
-int breedingSize=6;
 Population populations[];
-int popSize=1;
+int numOfPops=8;
 Loci cities;
 
 int w=720;
@@ -27,23 +26,23 @@ public void setup() {
   
   int i;
     
-  cities = new Loci(popSize,w,h);
+  cities = new Loci(numOfPops,w,h);
   
-  populations = new Population[popSize];
+  populations = new Population[numOfPops];
   
   Locus fromCity, toCity;
   
   stroke(255,0,0);
-  for (i=0;i<popSize;i++)
+  for (i=0;i<numOfPops;i++)
   {
-    //fromCity = cities.mLocus[i];
-    //toCity = cities.randomLocus(i);
-    //populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
+    fromCity = cities.mLocus[i];
+    toCity = cities.randomLocus(i);
+    populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
     
-    populations[i]= new Population(50,50,0,midH,w,midH); 
+    //populations[i]= new Population(50,50,0,midH,w,midH); 
 
     
-    //line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
+    line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
   }
 
   
@@ -86,7 +85,8 @@ public void draw() {
    
   //fill(0, 0, 255-(generations*5));
   
-  for (k=0;k<popSize;k++)
+  // First for loop draws/updates each member of each population
+  for (k=0;k<numOfPops;k++)
   {
     int numBlobs = populations[k].mMaxPop;
     
@@ -130,13 +130,11 @@ public void draw() {
     }  
   }
   
-  
-  for (k=0;k<popSize;k++)
+  // second for loop checks for any populations that have completed their
+  // run (i.e. all members have run to completion) if this is the case
+  // we can then breed the populations.
+  for (k=0;k<numOfPops;k++)
   {  
-    int averageFitness=0;
-    //int bestFitness=10000;
-    int numBlobs = populations[k].mMaxPop;
-
     // IF this population has hit the generation limit, bail
     if (populations[k].mCurrentGen>populations[k].mMaxGen)
     {
@@ -150,36 +148,20 @@ public void draw() {
       //background(255,255,255);
   
       print("Population:"+k+" Generation run:"+populations[k].mCurrentGen++);
-      print(" Blobs:"+numBlobs);
-      /*print(populations[k]);
-      for (i=0;i<numBlobs;i++)
-      {
-        populations[k].mBlobs[i].fitness(populations[k].mTargetX,populations[k].mTargetY);
-      }
-      Arrays.sort(populations[k].mBlobs);
-      print(populations[k]);
-      noLoop();*/
+      print(" Blobs:"+populations[k].mMaxPop);
       
-      
-// TODO - lets move BreedingPool into Population, so we can clean up draw(), and allow
-// a breedpool to be specific to a population.
-      BreedingPool bp = new BreedingPool(breedingSize);
+      // Sort the current population based on fitness - note this assumes
+      // fitness is up to date (recently calculated)
       Arrays.sort(populations[k].mBlobs);
+      //print(populations[k]);
+      
+      // Update the breeding pool with the set of blobs we want to breed from
+      populations[k].mBPool.resetPool();
+      populations[k].updateBreedingPool();
+      print(populations[k].mBPool);
 
-      for (i=0;i<bp.mPoolSize;i++)
-      {
-        // Update the final fitness
-        averageFitness+=populations[k].mBlobs[i].mFitness;
-        
-        // Add the best blobs to the breedingpool
-        bp.add(populations[k].mBlobs[i]);
-      }
-      
-      
-      //print(" BP bestFitness="+bestFitness);
-      print(" BP averageFitness="+(averageFitness/bp.mPoolSize)+"\n");
-  
-      bp.breed(populations[k].mBlobs, numBlobs);   
+      // breed the blobs to create the new population.
+      populations[k].mBPool.breed(populations[k].mBlobs, populations[k].mMaxPop);   
     }
   }
 }

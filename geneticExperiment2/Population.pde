@@ -1,6 +1,9 @@
 class Population
 {
   Blob mBlobs[];
+  BreedingPool mBPool;
+  int mBreedingSize=6;
+  
   int mMaxPop;
   int mMaxGen;
   int mBaseR=255;
@@ -40,9 +43,40 @@ class Population
     {
       mBlobs[i] = new Blob(mStartX,mStartY);
       mBlobs[i].setTarget(targetX,targetY);
-    }  
+    }
+    
+    mBPool = new BreedingPool(mBreedingSize);
+  }
+    
+    
+  public void updateBreedingPool()
+  {
+    int i;
+    int totalFitness=0;
+    int weight=0;
+    int totalWeight=0;
+    
+    for (i=0;i<mBreedingSize;i++)
+    {
+      // Update the final fitness
+      totalFitness+=mBlobs[i].mFitness;
+        
+      // Add the best blobs to the breedingpool
+      mBPool.add(mBlobs[i]);
+    }
+    print(" BP averageFitness="+(totalFitness/mBPool.mPoolSize)+"\n");
+    for (i=0;i<mBreedingSize;i++)
+    {
+      weight = totalFitness/mBPool.mPool[i].mFitness;
+      mBPool.mWeights[i] = weight;
+      totalWeight+=weight;
+    }
+    mBPool.mTotalWeight = totalWeight;
   }
   
+  // TODO - all this colour code needs ripping out and reworking, the
+  // fading-in effect it was attempting to emulate, doesnt really work
+  // easily/well - come up with a better way of doing this.
   public void setBaseColour(int baseR, int baseG, int baseB)
   {
     mBaseR = baseR;
@@ -106,4 +140,6 @@ class Population
       return(0);
     }
   }
+  
+
 }
