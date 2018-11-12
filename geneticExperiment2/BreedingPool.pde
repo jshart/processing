@@ -11,12 +11,27 @@ public class BreedingPool
     mPoolSize=poolSize;    
   }
   
+  public void add(Blob b)
+  {
+
+    
+    // if there is space simply add it
+    // as we only get picky once we've
+    // got at least a minimum to breed
+    // from
+    if (mBlobsInPool < mPoolSize)
+    {
+      pool[mBlobsInPool]=b;
+      mBlobsInPool++;
+    }
+  }
+  
 
 // TODO - need to clean this up to fix the hacks and
 // to allow prioritisation based on more than one
 // factor - primary (e.g. linearDistance) and secondary
 // (e.g. effeciency)
-  public void add(Blob b)
+ /* public void add(Blob b)
   {
     int i=0;
     
@@ -75,7 +90,7 @@ public class BreedingPool
         }
       }
     }
-  }
+  } */
   
   public void breed(Blob b[], int ps)
   {
@@ -89,6 +104,7 @@ public class BreedingPool
       r2=floor(random(mPoolSize));
       
       b[i]=new Blob(pool[r1].mStartX,pool[r1].mStartY,pool[r1].mDna,pool[r2].mDna);
+      b[i].setTarget(pool[r1].mTargetX, pool[r1].mTargetY);
     }
   }
 }

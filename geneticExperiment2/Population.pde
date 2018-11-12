@@ -11,7 +11,18 @@ class Population
   int mTargetX;
   int mTargetY;
   int mCurrentGen=0;  
-  boolean stillUpdating=false;
+  boolean stillUpdatingPopulation=false;
+  
+  public String toString()
+  {
+    int i;
+    String s = new String();
+    for (i=0;i<mMaxPop;i++)
+    {
+      s+="B:"+i+mBlobs[i]+"\n";
+    }
+    return(s);
+  }
   
   public Population(int maxPop, int maxGen, int startX, int startY, int targetX, int targetY)
   {
@@ -28,6 +39,7 @@ class Population
     for (i=0;i<mMaxPop;i++)
     {
       mBlobs[i] = new Blob(mStartX,mStartY);
+      mBlobs[i].setTarget(targetX,targetY);
     }  
   }
   

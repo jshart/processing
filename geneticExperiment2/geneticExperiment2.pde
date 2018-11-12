@@ -1,3 +1,8 @@
+import java.util.Arrays;
+
+
+// geneticExperiment -*-> Population -*-> Blob -1-> Dna -*-> Gene
+
 int numObstacles=0;
 Block obstacles[];
 Block obstacle=new Block();
@@ -97,12 +102,12 @@ public void draw() {
     stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(), populations[k].getCurrentBlue());
     //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
 
-    populations[k].stillUpdating=false;
+    populations[k].stillUpdatingPopulation=false;
     
     // Draw the blobs
     for (i=0;i<numBlobs;i++)
     {
-      if (populations[k].mBlobs[i].mRunning)
+      if (populations[k].mBlobs[i].isRunning())
       {
         //ellipse(blobs[i].x,blobs[i].y,10,5);
         point(populations[k].mBlobs[i].x,populations[k].mBlobs[i].y);
@@ -115,12 +120,12 @@ public void draw() {
           
           if (tempObstacle.contains(populations[k].mBlobs[i].x, populations[k].mBlobs[i].y)==true)
           {
-            populations[k].mBlobs[i].mRunning=false;
+            populations[k].mBlobs[i].stopRunning();
             break;
           }
         }
         
-        populations[k].stillUpdating=true;
+        populations[k].stillUpdatingPopulation=true;
       }
     }  
   }
@@ -129,7 +134,7 @@ public void draw() {
   for (k=0;k<popSize;k++)
   {  
     int averageFitness=0;
-    int bestFitness=10000;
+    //int bestFitness=10000;
     int numBlobs = populations[k].mMaxPop;
 
     // IF this population has hit the generation limit, bail
@@ -140,32 +145,39 @@ public void draw() {
     
     // Generation has run to completion, update generation
     // ready for next iteration
-    if (populations[k].stillUpdating==false)
+    if (populations[k].stillUpdatingPopulation==false)
     {
       //background(255,255,255);
   
       print("Population:"+k+" Generation run:"+populations[k].mCurrentGen++);
       print(" Blobs:"+numBlobs);
+      /*print(populations[k]);
+      for (i=0;i<numBlobs;i++)
+      {
+        populations[k].mBlobs[i].fitness(populations[k].mTargetX,populations[k].mTargetY);
+      }
+      Arrays.sort(populations[k].mBlobs);
+      print(populations[k]);
+      noLoop();*/
+      
       
 // TODO - lets move BreedingPool into Population, so we can clean up draw(), and allow
 // a breedpool to be specific to a population.
       BreedingPool bp = new BreedingPool(breedingSize);
-  
-      for (i=0;i<numBlobs;i++)
+      Arrays.sort(populations[k].mBlobs);
+
+      for (i=0;i<bp.mPoolSize;i++)
       {
         // Update the final fitness
-        averageFitness+=populations[k].mBlobs[i].fitness(populations[k].mTargetX,populations[k].mTargetY);
-        
-        if (populations[k].mBlobs[i].mFitness<bestFitness)
-        {
-          bestFitness = populations[k].mBlobs[i].mFitness;
-        }
+        averageFitness+=populations[k].mBlobs[i].mFitness;
         
         // Add the best blobs to the breedingpool
         bp.add(populations[k].mBlobs[i]);
-      } 
-      print(" bestFitness="+bestFitness);
-      print(" averageFitness="+(averageFitness/numBlobs)+"\n");
+      }
+      
+      
+      //print(" BP bestFitness="+bestFitness);
+      print(" BP averageFitness="+(averageFitness/bp.mPoolSize)+"\n");
   
       bp.breed(populations[k].mBlobs, numBlobs);   
     }

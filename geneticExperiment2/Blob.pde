@@ -1,21 +1,42 @@
-public class Blob
+public class Blob implements Comparable<Blob>
 {
   Dna mDna;
   int mStartX;
   int mStartY;
   float x;
   float y;
+  
+  int mTargetX;
+  int mTargetY;
 
   int mCurrentGene=0;
   float xDelta;
   float yDelta;
-  boolean mRunning=true;
+  private boolean mRunning=true;
   int mFitness=0;
   int numGenes=30;
 
   public String toString()
   {
-    return(new String("X:"+x+",Y:"+y));
+    return(new String("X:"+x+",Y:"+y+" F:"+mFitness));
+  }
+  
+  public void setTarget(int targetX, int targetY)
+  {
+    mTargetX=targetX;
+    mTargetY=targetY;
+  }
+
+  public void stopRunning()
+  {
+    mRunning=false;
+    
+    mFitness = fitness(mTargetX, mTargetY);
+  }
+  
+  public boolean isRunning()
+  {
+    return(mRunning);
   }
 
   public int fitness(int w, int h)
@@ -39,6 +60,7 @@ public class Blob
     return(mFitness);
   }
   
+  // Used for initial population - creates entirely random blob
   public Blob(int sx,int sy)
   {
     mStartX=sx;
@@ -48,6 +70,7 @@ public class Blob
     mDna = new Dna(numGenes);
   }
 
+/* Unused - but would clone if necessary
   public Blob(int sx,int sy,Dna d)
   {
     mStartX=sx;
@@ -55,8 +78,9 @@ public class Blob
     x = sx;
     y = sy;
     mDna = new Dna(numGenes,d);
-  }
+  } */
 
+  // Used for breeding using 2 parents (d1, d2)
   public Blob(int sx,int sy,Dna d1, Dna d2)
   {
     mStartX=sx;
@@ -85,7 +109,7 @@ public class Blob
       if (mCurrentGene==mDna.mGenomeLen)
       {
         mCurrentGene=0;
-        mRunning=false;
+        stopRunning();
         return(false);
       }
       
@@ -115,5 +139,13 @@ public class Blob
     }
 
     return(true);
+  }
+
+  public int compareTo(Blob b) {
+    // This allows us to sort the array smallest to largest - which means the "best" blobs
+    // are at the start of the array, based on a low fitness value being best. 
+    // flip the vars around to switch the ordering for a case where largest
+    // fitness is best.
+    return(mFitness - b.mFitness);
   }
 }
