@@ -35,6 +35,7 @@ class Population
     mStartY = startY;
     mTargetX = targetX;
     mTargetY = targetY;
+    setColourByStartPosition();
 
     mBlobs = new Blob[mMaxPop];
 
@@ -114,60 +115,31 @@ class Population
     mBaseB = baseB;
   }
   
+  public void setColourByStartPosition()
+  {
+    mBaseR = mStartX % 255;
+    mBaseG = ((mStartX+mStartY)/2) % 255;
+    mBaseB = mStartY % 255;
+  }
+  
   public int getCurrentRed()
   {
-    int r;
-    if (mBaseR==0)
-    {
-      return(0);
-    }
-    
-    r=(mBaseR/mMaxGen)*mCurrentGen;
-    if (mCurrentGen<45)
-    {
-      return(255-r);
-    }
-    else
-    {
-      return(mStartX % 255);
-    }
+    return(mBaseR);
   }
 
   public int getCurrentGreen()
   {
-    int g;
-    if (mBaseG==0)
-    {
-      return(0);
-    }
-    
-    g=(mBaseG/mMaxGen)*mCurrentGen;
-    if (mCurrentGen<45)
-    {
-      return(255-g);
-    }
-    else
-    {
-      return(((mStartX+mStartY)/2) % 255);
-    }
+    return(mBaseG);
   }
   
   public int getCurrentBlue()
   {
-    int b;
-    if (mBaseB==0)
-    {
-      return(0);
-    }    
-    
-    b=(mBaseB/mMaxGen)*mCurrentGen;
-    if (mCurrentGen<45)
-    {
-      return(255-b);
-    }
-    else
-    {
-      return(mStartY % 255);
-    }
+    return(mBaseB);
+  }
+  
+  public int getCurrentAlpha()
+  {
+    return(255/mMaxGen);
+    //return(40);
   }
 }

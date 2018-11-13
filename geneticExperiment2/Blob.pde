@@ -14,7 +14,7 @@ public class Blob implements Comparable<Blob>
   float yDelta;
   private boolean mRunning=true;
   int mFitness=0;
-  int numGenes=30;
+  int numGenes=20;
 
   public String toString()
   {

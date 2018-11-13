@@ -4,15 +4,19 @@ import java.util.Arrays;
 // geneticExperiment -*-> Population -*-> Blob -1-> Dna -*-> Gene
 
 int numObstacles=0;
-Block obstacles[];
-Block obstacle=new Block();
-
-Population populations[];
-int numOfPops=1;
-Loci cities;
-
+int numOfPops=20;
+int blobsPerPop=30;
+int maxGens=50;
 int w=720;
 int h=720;
+boolean drawFrameWork=false;
+
+Block obstacles[];
+Block obstacle=new Block();
+Population populations[];
+Loci cities;
+
+
 int midW=w/2;
 int midH=h/2;
 int startX=0;
@@ -35,17 +39,18 @@ public void setup() {
   stroke(255,0,0);
   for (i=0;i<numOfPops;i++)
   {
-    //fromCity = cities.mLocus[i];
-    //toCity = cities.randomLocus(i);
-    //populations[i]= new Population(30,50,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
+    fromCity = cities.mLocus[i];
+    toCity = cities.randomLocus(i);
+    populations[i]= new Population(blobsPerPop,maxGens,fromCity.mX,fromCity.mY,toCity.mX,toCity.mY); 
     
-    populations[i]= new Population(50,50,0,midH,w,midH); 
+    //populations[i]= new Population(blobsPerPop,maxGens,0,midH,w,midH); 
 
-    
-    //line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
+    if (drawFrameWork)
+    {
+      line(fromCity.mX,fromCity.mY,toCity.mX,toCity.mY);
+    }
   }
 
-  
   obstacles = new Block[numObstacles];
   
   int ox,oy;
@@ -54,14 +59,14 @@ public void setup() {
     //obstacles[i] = new Block(w,h);
     
     obstacles[i] = new Block();
-    ox=1+(i % 10);
+    ox=1+(i % 5);
     oy=1+(i / 5);
     
-    ox *= 40;
-    oy *= 40;
+    ox *= 60;
+    oy *= 60;
     
-    ox+=100;
-    oy+=10;
+    ox+=150;
+    oy+=20;
     
     obstacles[i].setPosition(ox,oy);
   }
@@ -93,13 +98,17 @@ public void draw() {
     // IF this population has hit the generation limit, bail
     if (populations[k].mCurrentGen>populations[k].mMaxGen)
     {
-      break;
+      continue;
     }
     
-    fill(255,0,0);
-    ellipse(populations[k].mStartX,populations[k].mStartY,10,10);
+    if (drawFrameWork)
+    {
+      fill(255,0,0);
+      ellipse(populations[k].mStartX,populations[k].mStartY,10,10);
+    }
     
-    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(), populations[k].getCurrentBlue());
+    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),
+            populations[k].getCurrentBlue(),populations[k].getCurrentAlpha());
     //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
 
     populations[k].stillUpdatingPopulation=false;
@@ -138,7 +147,7 @@ public void draw() {
     // IF this population has hit the generation limit, bail
     if (populations[k].mCurrentGen>populations[k].mMaxGen)
     {
-      break;
+      continue;
     }
     
     // Generation has run to completion, update generation
@@ -162,6 +171,12 @@ public void draw() {
 
       // breed the blobs to create the new population.
       populations[k].mBPool.breed(populations[k].mBlobs, populations[k].mMaxPop);   
+    }
+    
+    if (drawFrameWork)
+    {
+      stroke(255,255,255);
+      line(populations[k].mStartX,populations[k].mStartY,populations[k].mTargetX,populations[k].mTargetY);
     }
   }
 }
