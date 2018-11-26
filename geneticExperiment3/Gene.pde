@@ -1,11 +1,10 @@
 class Gene
 {
   int travelDistance;
-
   int mMaxDist=100;
   int errorPercent=5;
-
   PVector mDelta;
+  
   public int updateTravelDistance()
   {
     float x=Math.abs(mDelta.x);

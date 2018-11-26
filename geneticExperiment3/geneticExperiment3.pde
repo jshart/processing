@@ -9,7 +9,7 @@ int blobsPerPop=30;
 int maxGens=50;
 int w=720;
 int h=720;
-boolean drawFrameWork=false;
+boolean drawFrameWork=true;
 
 Block obstacles[];
 Block obstacle=new Block();
@@ -94,7 +94,7 @@ public void draw() {
   for (k=0;k<numOfPops;k++)
   {
     int numBlobs = populations[k].mMaxPop;
-    
+
     // IF this population has hit the generation limit, bail
     if (populations[k].mCurrentGen>populations[k].mMaxGen)
     {
@@ -107,8 +107,7 @@ public void draw() {
       ellipse(populations[k].mStart.x,populations[k].mStart.y,10,10);
     }
     
-    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),
-            populations[k].getCurrentBlue(),populations[k].getCurrentAlpha());
+    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlpha());
     //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
 
     populations[k].stillUpdatingPopulation=false;

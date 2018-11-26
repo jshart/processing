@@ -51,8 +51,8 @@ public class Blob implements Comparable<Blob>
 
   public int fitness(float x, float y)
   {
-    int wDelta = floor(abs(w-floor(x)));
-    int hDelta = floor(abs(h-floor(y)));
+    int wDelta = floor(abs(x-floor(mMoving.mPosition.x)));
+    int hDelta = floor(abs(y-floor(mMoving.mPosition.y)));
     int linearDistance;
     
     // As the crow flies distance remaining to the target (low is better)
@@ -67,6 +67,7 @@ public class Blob implements Comparable<Blob>
   {
     mMoving = new MovingObject(p);
     mDna = new Dna(numGenes);
+    loadGene();
   }
 
 
@@ -75,6 +76,7 @@ public class Blob implements Comparable<Blob>
   {
     mMoving = new MovingObject(sx,sy);
     mDna = new Dna(numGenes);
+    loadGene();
   }
 
 /* Unused - but would clone if necessary
@@ -82,6 +84,7 @@ public class Blob implements Comparable<Blob>
   {
     mMoving = new MovingObject(sx,sy);
     mDna = new Dna(numGenes,d);
+    loadGene();
   } */
 
   // Used for breeding using 2 parents (d1, d2)
@@ -89,6 +92,7 @@ public class Blob implements Comparable<Blob>
   {
     mMoving = new MovingObject(p);
     mDna = new Dna(numGenes, d1, d2);
+    loadGene();
   }
 
   
@@ -97,17 +101,21 @@ public class Blob implements Comparable<Blob>
   {
     mMoving = new MovingObject(sx,sy);
     mDna = new Dna(numGenes, d1, d2);
+    loadGene();
   }
 
   
   public void loadGene()
   {
-    mInterimTarget = mDna.mGenes[mCurrentGene].mDelta;
+    mInterimTarget = PVector.add(mMoving.mPosition,mDna.mGenes[mCurrentGene].mDelta);
+    //print("Interim:"+mInterimTarget);
   }
   
   public boolean updatePosition()
   {
     PVector delta;
+    
+    mMoving.updatePosition();
     mMoving.seek(mInterimTarget);
     
     delta = PVector.sub(mMoving.mPosition, mInterimTarget);
