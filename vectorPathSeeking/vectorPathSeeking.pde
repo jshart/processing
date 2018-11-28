@@ -8,22 +8,60 @@ void setup()
 {
   size(640, 640);
 
+  createRestrictedRandomWalk();
+  printPath();
+}
+
+void createRestrictedRandomWalk()
+{  
   path = new PVector[segments];
+  int mag=30;
 
   int i;
   for (i=0; i<segments; i++)
   {
-    path[i]=new PVector(50*(i+1), 250+(random(200)-100));
+    if (i==0)
+    {
+      path[0]=PVector.random2D();
+      path[0].mult(mag);
+    }
+    else
+    {
+      path[i]=path[i-1].copy();
+      path[i].rotate(random(HALF_PI)-QUARTER_PI);
+      //path[i].add(path[i-1]);
+    }
+    
+    //path[i]=new PVector(50*(i+1), 250+(random(200)-100));
+  }  
+  for (i=1; i<segments; i++)
+  {
+      path[i].add(path[i-1]);    
   }
-  
-
-  
 }
+
+void printPath()
+{
+  int i;
+  for (i=0;i<segments;i++)
+  {
+    printVector(path[i]);
+  }
+}
+
+void printVector(PVector v)
+{
+    print("V:"+v+" M:"+v.mag()+"H:"+v.heading());
+    println();
+}
+
 
 int seekIndex=0;
 
 void draw()
 {
+  translate(320,320);
+
   //PVector mouse = new PVector(mouseX, mouseY);
   agent.seek(path[seekIndex]);
 
@@ -35,7 +73,7 @@ void draw()
   if (seekIndex<segments-1 && xDelta<5 && yDelta<5)
   {
      seekIndex++;
-     print("next path seg");
+     //print("next path seg");
   }
   
   stroke(0, 255, 0);
@@ -47,5 +85,6 @@ void draw()
   for (j=0; j<segments-1; j++)
   {
     line(path[j].x, path[j].y, path[j+1].x, path[j+1].y);
+    ellipse(path[j].x, path[j].y,3,3);
   }
 }

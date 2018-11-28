@@ -23,6 +23,10 @@ void setup()
   lBound=v.copy();
   lBound.rotate(QUARTER_PI);
   lBound.add(v);
+  println();
+  print("V:"+v+" M:"+v.mag());
+  println();
+  print("N:"+n+" M:"+n.mag());
 }
 
 void draw()
