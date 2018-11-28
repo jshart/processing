@@ -4,8 +4,8 @@ public class MovingObject
   PVector mStartingPosition;
   PVector mVelocity; 
   PVector mAcceleration;
-  float maxforce = 0.2;
-  float maxspeed = 2;
+  float maxforce = 0.05;
+  float maxspeed = 1;
 
   public MovingObject(PVector start)
   {
