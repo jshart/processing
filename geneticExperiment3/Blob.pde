@@ -2,11 +2,11 @@ public class Blob implements Comparable<Blob>
 {
   Dna mDna;
   MovingObject mMoving;
+  Path mPath;
   
   PVector mFinalTarget;
   PVector mInterimTarget;
   
-  int mCurrentGene=0;
   private boolean mRunning=true;
   int mFitness=0;
   int numGenes=20;
@@ -61,54 +61,35 @@ public class Blob implements Comparable<Blob>
     mFitness=linearDistance;
     return(mFitness);
   }
+
+  public void createPathFromDNA()
+  {
+    int i;
+
+    mPath = new Path(numGenes);
+
+    for (i=0;i<numGenes;i++)
+    {
+      mPath.addSegment(mDna.mGenes[i].mDelta);
+    }
+    loadSegment();
+    //mInterimTarget = mPath.getNextSegment();
+  }
   
   // Used for initial population - creates entirely random blob
   public Blob(PVector p)
   {
     mMoving = new MovingObject(p);
     mDna = new Dna(numGenes);
-    loadGene();
+    createPathFromDNA();
   }
-
-
-  // Used for initial population - creates entirely random blob
-  public Blob(int sx,int sy)
-  {
-    mMoving = new MovingObject(sx,sy);
-    mDna = new Dna(numGenes);
-    loadGene();
-  }
-
-/* Unused - but would clone if necessary
-  public Blob(int sx,int sy,Dna d)
-  {
-    mMoving = new MovingObject(sx,sy);
-    mDna = new Dna(numGenes,d);
-    loadGene();
-  } */
 
   // Used for breeding using 2 parents (d1, d2)
   public Blob(PVector p,Dna d1, Dna d2)
   {
     mMoving = new MovingObject(p);
     mDna = new Dna(numGenes, d1, d2);
-    loadGene();
-  }
-
-  
-  // Used for breeding using 2 parents (d1, d2)
-  public Blob(int sx,int sy,Dna d1, Dna d2)
-  {
-    mMoving = new MovingObject(sx,sy);
-    mDna = new Dna(numGenes, d1, d2);
-    loadGene();
-  }
-
-  
-  public void loadGene()
-  {
-    mInterimTarget = PVector.add(mMoving.mPosition,mDna.mGenes[mCurrentGene].mDelta);
-    //print("Interim:"+mInterimTarget);
+    createPathFromDNA();
   }
   
   public boolean updatePosition()
@@ -125,19 +106,31 @@ public class Blob implements Comparable<Blob>
     // if we've Consumed this gene, then move onto the next
     if (delta.x<5 && delta.y<5)
     {
-      mCurrentGene++;
-    
-      if (mCurrentGene==mDna.mGenomeLen)
+      // If we're out of segments stop.
+      if (mPath.mCurrentSegment==mDna.mGenomeLen-1)
       {
-        mCurrentGene=0;
+        // reset the segment count to something sane now we're done with this loop
+        mPath.mCurrentSegment=0;
         stopRunning();
+        
+        // Return false to indicate we couldn't update the
+        // position (indicating we're done)
         return(false);
       }
       
-      loadGene();
+      // Fetch the next segment
+      loadSegment();
+      //mInterimTarget = mPath.getNextSegment();
     }
 
+    // Return true to indicate we were we able to update the position.
     return(true);
+  }
+  
+  public void loadSegment()
+  {
+    mInterimTarget = PVector.add(mMoving.mPosition,mPath.getNextSegment());
+    //print("Interim:"+mInterimTarget);
   }
 
   public int compareTo(Blob b) {
