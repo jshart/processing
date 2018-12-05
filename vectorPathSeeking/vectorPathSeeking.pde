@@ -8,7 +8,8 @@ void setup()
 {
   size(640, 640);
 
-  createRestrictedRandomWalk();
+  createRestrictedRandomWalk2();
+  //createRestrictedRandomWalk();  
   printPath();
 }
 
@@ -34,6 +35,29 @@ void createRestrictedRandomWalk()
     
     //path[i]=new PVector(50*(i+1), 250+(random(200)-100));
   }  
+  for (i=1; i<segments; i++)
+  {
+      path[i].add(path[i-1]);    
+  }
+}
+
+void createRestrictedRandomWalk2()
+{  
+  path = new PVector[segments];
+  int mag=30;
+  
+  PVector startingV = PVector.random2D();
+  startingV.mult(mag);
+
+  int i;
+  float totalRotation=0;
+  for (i=0; i<segments; i++)
+  {
+    path[i]=startingV.copy();
+    totalRotation+=random(HALF_PI)-QUARTER_PI;
+    path[i].rotate(totalRotation);
+  }
+  
   for (i=1; i<segments; i++)
   {
       path[i].add(path[i-1]);    
