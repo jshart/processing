@@ -7,9 +7,9 @@ int numObstacles=0;
 int numOfPops=20;
 int blobsPerPop=30;
 int maxGens=25;
-int w=720;
-int h=720;
-boolean drawFrameWork=true;
+int w=640;
+int h=640;
+boolean drawFrameWork=false;
 
 Block obstacles[];
 Block obstacle=new Block();
@@ -24,9 +24,11 @@ int startY=midH;
 
 
 public void setup() {
-  size(720, 720);
+  size(640, 640);
   background(255,255,255);
   //noStroke(); 
+  
+  setupPN();
   
   int i;
     
@@ -71,6 +73,7 @@ public void setup() {
     obstacles[i].setPosition(ox,oy);
   }
 
+  drawPN();
 }
 
 public void draw() {
@@ -78,6 +81,8 @@ public void draw() {
   int i,j,k;
 
   Block tempObstacle;
+
+
   
   fill(100, 100, 100);
   // Draw the obstacle
@@ -107,7 +112,9 @@ public void draw() {
       ellipse(populations[k].mStart.x,populations[k].mStart.y,10,10);
     }
     
-    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlphaFixed());
+    //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlphaFixed());
+    stroke(255-(255/(populations[k].mCurrentGen+1)),255-(255/(populations[k].mCurrentGen+1)),255-(255/(populations[k].mCurrentGen+1)),populations[k].getCurrentAlphaFixed());
+
     //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue());
 
     //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
@@ -178,6 +185,87 @@ public void draw() {
     {
       stroke(255,255,255);
       line(populations[k].mStart.x,populations[k].mStart.y,populations[k].mTarget.x,populations[k].mTarget.y);
+    }
+  }
+}
+
+
+double cells[][];
+int cols=640;
+int rows=640;
+
+ImprovedNoise pNoise;
+
+
+double maxValue=-1;
+double minValue=1;
+double valueRange=0;
+  
+void setupPN()
+{
+  cells=new double[cols][rows];
+  pNoise = new ImprovedNoise();
+
+  pNoise();
+  
+  int i,j;
+
+  
+  for (i=0;i<cols;i++)
+  {
+    for (j=0;j<rows;j++)
+    {
+    //print(cells[i][0]+" ");
+      minValue=(cells[i][j]<minValue)?cells[i][j]:minValue;
+      maxValue=(cells[i][j]>maxValue)?cells[i][j]:maxValue;
+    }
+  }
+  println("min/max: "+minValue+":"+maxValue);
+}
+
+int waterLine=10;
+int treeLine=120;
+int climateStep=2;
+
+void drawPN()
+{
+  int i,j;
+  double mappedColour;
+  
+  valueRange=maxValue-minValue;
+  println("valueRange:"+valueRange);
+  
+  //waterLine=(waterLine<100?waterLine+5:waterLine);
+  waterLine=(waterLine>0?waterLine-climateStep:waterLine);
+  treeLine=(treeLine<200?treeLine+climateStep:treeLine);
+
+  
+  for (i=0;i<cols;i++)
+  {
+    for (j=0;j<rows;j++)
+    {
+      mappedColour=(cells[i][j]+Math.abs(minValue))*(255/valueRange);
+          
+      if (mappedColour<waterLine)
+      {
+        stroke(0,0,floor((float)mappedColour)+125);
+      }
+      else if (mappedColour<treeLine)
+      {
+        stroke(75+floor((float)mappedColour),75+floor((float)mappedColour),0);
+      }
+      else if(mappedColour<220)
+      {
+        stroke(0,255-floor((float)mappedColour),0);
+      }
+      else
+      {
+        stroke(floor((float)mappedColour)-150,floor((float)mappedColour)-150,floor((float)mappedColour)-150);
+      }
+      
+      //stroke(0,0,floor((float)mappedColour));
+      
+      point(i,j);
     }
   }
 }
