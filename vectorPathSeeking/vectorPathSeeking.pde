@@ -10,13 +10,13 @@ void setup()
 
   createRestrictedRandomWalk2();
   //createRestrictedRandomWalk();  
-  printPath();
+  //printPath();
 }
 
 void createRestrictedRandomWalk()
 {  
   path = new PVector[segments];
-  int mag=30;
+  int mag=50;
 
   int i;
   for (i=0; i<segments; i++)
@@ -44,24 +44,41 @@ void createRestrictedRandomWalk()
 void createRestrictedRandomWalk2()
 {  
   path = new PVector[segments];
-  int mag=30;
   
   PVector startingV = PVector.random2D();
-  startingV.mult(mag);
+  PVector previous;
+print("Starting heading:"+startingV.heading());
 
   int i;
-  float totalRotation=0;
   for (i=0; i<segments; i++)
   {
-    path[i]=startingV.copy();
-    totalRotation+=random(HALF_PI)-QUARTER_PI;
-    path[i].rotate(totalRotation);
+    if (i==0)
+    {
+      previous=startingV.copy();
+    }
+    else
+    {
+      previous=path[i-1].copy();
+    }
+
+    path[i]=createRandomSegment(previous);
   }
   
   for (i=1; i<segments; i++)
   {
       path[i].add(path[i-1]);    
   }
+}
+
+PVector createRandomSegment(PVector previous)
+{
+    int mag=50;
+    PVector p = previous;
+    p.normalize();
+    p.mult(random(mag));
+
+    p.rotate(random(HALF_PI)-QUARTER_PI);
+    return(p);
 }
 
 void printPath()

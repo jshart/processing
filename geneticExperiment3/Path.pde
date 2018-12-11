@@ -13,7 +13,7 @@ public class Path
     mLastSeg = 0;
   }
   
-  public void addSegment(PVector p)
+  public void addSegment(PVector p, float rotate)
   {
     if (mLastSeg>=mMaxSegments)
     {
@@ -21,6 +21,7 @@ public class Path
     }
     
     mSegments[mLastSeg]=p.copy();
+    mSegments[mLastSeg].rotate(rotate);
     mLastSeg++;
   }
   

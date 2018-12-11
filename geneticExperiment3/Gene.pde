@@ -1,21 +1,14 @@
 class Gene
 {
-  int travelDistance;
+  float travelDistance;
   int mMaxDist=100;
   int errorPercent=5;
   PVector mDelta;
+  float mRotation;
   
-  public int updateTravelDistance()
+  public float updateTravelDistance()
   {
-    float x=Math.abs(mDelta.x);
-    float y=Math.abs(mDelta.y);
-    int ans=floor(sqrt((x*x)+(y*y)));
-    return(ans);
-  }
-  
-  public int randomDist(int d)
-  {
-    return(floor(random(d))-(d/2));
+    return(mDelta.mag());
   }
   
   public Gene()
@@ -28,6 +21,7 @@ class Gene
     int r1;
     
     mDelta = g.mDelta.copy();
+    mRotation = g.mRotation;
     travelDistance = g.travelDistance;
 
     r1=floor(random(100));    
@@ -39,7 +33,10 @@ class Gene
   
   public void randomGene()
   {
-    mDelta = new PVector(randomDist(mMaxDist),randomDist(mMaxDist)); 
+    mDelta = PVector.random2D();
+    mDelta.mult(random(mMaxDist));
+    mRotation = random(HALF_PI)-QUARTER_PI;
+    
     travelDistance=updateTravelDistance();
   }
 }

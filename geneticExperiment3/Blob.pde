@@ -65,12 +65,14 @@ public class Blob implements Comparable<Blob>
   public void createPathFromDNA()
   {
     int i;
+    float totalRotation=0;
 
     mPath = new Path(numGenes);
 
     for (i=0;i<numGenes;i++)
     {
-      mPath.addSegment(mDna.mGenes[i].mDelta);
+      totalRotation+=mDna.mGenes[i].mRotation;
+      mPath.addSegment(mDna.mGenes[i].mDelta, totalRotation);
     }
     loadSegment();
     //mInterimTarget = mPath.getNextSegment();
