@@ -6,7 +6,7 @@ import java.util.Arrays;
 int numObstacles=0;
 int numOfPops=20;
 int blobsPerPop=30;
-int maxGens=50;
+int maxGens=25;
 int w=720;
 int h=720;
 boolean drawFrameWork=true;
@@ -107,7 +107,9 @@ public void draw() {
       ellipse(populations[k].mStart.x,populations[k].mStart.y,10,10);
     }
     
-    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlpha());
+    stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlphaFixed());
+    //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue());
+
     //fill(populations[k].mBaseR, populations[k].mBaseG, populations[k].mBaseB);
 
     populations[k].stillUpdatingPopulation=false;

@@ -22,6 +22,12 @@ public class Path
     
     mSegments[mLastSeg]=p.copy();
     mSegments[mLastSeg].rotate(rotate);
+    
+    // Make this path segment incremental onto previous (if there is one)
+    if (mLastSeg>0)
+    {
+      mSegments[mLastSeg].add(mSegments[mLastSeg-1]);
+    }
     mLastSeg++;
   }
   

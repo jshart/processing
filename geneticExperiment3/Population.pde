@@ -138,9 +138,28 @@ class Population
     return(mBaseB);
   }
   
-  public int getCurrentAlpha()
+  public int getCurrentAlphaFixed()
   {
     return(255/mMaxGen);
+  }
+  
+  // Experimental linear increase for alpha - 
+  // works but effect is undesirable
+  public int getCurrentAlphaLinear()
+  {
+    return((255/mMaxGen)*mCurrentGen);
+    //return(255/(mMaxGen));
     //return(40);
+  }
+  
+  // Experimental curve (expodential) increase for alpha -
+  // works but effect is undesirable
+  public int getCurrentAlphaCurve()
+  {
+    float max = mMaxGen * mMaxGen * mMaxGen;
+    float scale = 255.0/max;
+    float a = (mCurrentGen * mCurrentGen * mCurrentGen) * scale;
+
+    return((int)a);
   }
 }

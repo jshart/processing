@@ -17,6 +17,14 @@ class Dna
     for (i=0;i<numGenes;i++)
     {
       mGenes[i] = new Gene();
+      
+      // Hack - just want to set an initial orientation
+      if (i==0)
+      {
+        mGenes[i].mRotation+=(random(PI));
+      }
+      
+      
       mTotalDistance+=mGenes[i].travelDistance;
     }    
   }

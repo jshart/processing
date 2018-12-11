@@ -9,7 +9,7 @@ public class Blob implements Comparable<Blob>
   
   private boolean mRunning=true;
   int mFitness=0;
-  int numGenes=20;
+  int numGenes=15;
 
   public String toString()
   {
@@ -72,6 +72,7 @@ public class Blob implements Comparable<Blob>
     for (i=0;i<numGenes;i++)
     {
       totalRotation+=mDna.mGenes[i].mRotation;
+      
       mPath.addSegment(mDna.mGenes[i].mDelta, totalRotation);
     }
     loadSegment();
@@ -97,6 +98,7 @@ public class Blob implements Comparable<Blob>
   public boolean updatePosition()
   {
     PVector delta;
+    int collisionError=2;
     
     mMoving.updatePosition();
     mMoving.seek(mInterimTarget);
@@ -106,7 +108,7 @@ public class Blob implements Comparable<Blob>
     // TODO - we need to come back and do some edge detection/boucing here
     
     // if we've Consumed this gene, then move onto the next
-    if (delta.x<5 && delta.y<5)
+    if (delta.x<collisionError && delta.y<collisionError)
     {
       // If we're out of segments stop.
       if (mPath.mCurrentSegment==mDna.mGenomeLen-1)
@@ -114,12 +116,13 @@ public class Blob implements Comparable<Blob>
         // reset the segment count to something sane now we're done with this loop
         mPath.mCurrentSegment=0;
         stopRunning();
+              print(".");
         
         // Return false to indicate we couldn't update the
         // position (indicating we're done)
         return(false);
       }
-      
+
       // Fetch the next segment
       loadSegment();
       //mInterimTarget = mPath.getNextSegment();
