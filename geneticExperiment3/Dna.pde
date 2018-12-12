@@ -21,6 +21,7 @@ class Dna
       // Hack - just want to set an initial orientation
       if (i==0)
       {
+        print("adding initial rotation");
         mGenes[i].mRotation+=(random(PI));
       }
       

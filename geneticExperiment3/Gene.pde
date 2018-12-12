@@ -1,7 +1,7 @@
 class Gene
 {
   float travelDistance;
-  int mMaxDist=100;
+  int mMaxDist=50;
   int errorPercent=10;
   PVector mDelta;
   float mRotation;
@@ -32,6 +32,6 @@ class Gene
     
     mDelta =  PVector.random2D();
     mDelta.setMag(travelDistance);
-    mRotation = random(HALF_PI)-QUARTER_PI;
+    mRotation = random(QUARTER_PI)-(QUARTER_PI/2);
   }
 }

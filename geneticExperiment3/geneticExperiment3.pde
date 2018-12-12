@@ -12,6 +12,9 @@ int w=640;
 int h=640;
 boolean drawFrameWork=false;
 boolean drawCities=true;
+boolean drawPerlinNoise=true;
+int suppressEarlyGens=10;
+
 
 Block obstacles[];
 Block obstacle=new Block();
@@ -30,7 +33,10 @@ public void setup() {
   background(255,255,255);
   //noStroke(); 
   
-  setupPN();
+  if (drawPerlinNoise)
+  {
+    setupPN();
+  }
   
   int i;
     
@@ -81,7 +87,10 @@ public void setup() {
     obstacles[i].setPosition(ox,oy);
   }
 
-  drawPN();
+  if (drawPerlinNoise)
+  {
+    drawPN();
+  }
 }
 
 public void draw() {
@@ -115,9 +124,14 @@ public void draw() {
     }
     
 
-    
-    //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlphaFixed());
-    stroke(125-(125/(populations[k].mCurrentGen+1)),125-(125/(populations[k].mCurrentGen+1)),125-(125/(populations[k].mCurrentGen+1)),populations[k].getCurrentAlphaFixed());
+    if (drawPerlinNoise)
+    {
+      stroke(125-(125/(populations[k].mCurrentGen+1)),125-(125/(populations[k].mCurrentGen+1)),125-(125/(populations[k].mCurrentGen+1)),populations[k].getCurrentAlphaFixed());
+    }
+    else
+    {
+      stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlphaFixed());
+    }
 
     //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue());
 
@@ -125,13 +139,16 @@ public void draw() {
 
     populations[k].stillUpdatingPopulation=false;
     
-    // Draw the blobs
+    // Update the blobs positions
     for (i=0;i<numBlobs;i++)
     {
       if (populations[k].mBlobs[i].isRunning())
       {
         //ellipse(blobs[i].x,blobs[i].y,10,5);
-        point(populations[k].mBlobs[i].mMoving.mPosition.x,populations[k].mBlobs[i].mMoving.mPosition.y);
+        if (populations[k].mCurrentGen>suppressEarlyGens)
+        {
+          point(populations[k].mBlobs[i].mMoving.mPosition.x,populations[k].mBlobs[i].mMoving.mPosition.y);
+        }
   
         populations[k].mBlobs[i].updatePosition();
           
@@ -174,7 +191,6 @@ public void draw() {
       // Sort the current population based on fitness - note this assumes
       // fitness is up to date (recently calculated)
       Arrays.sort(populations[k].mBlobs);
-      //print(populations[k]);
       
       // Update the breeding pool with the set of blobs we want to breed from
       populations[k].mBPool.resetPool();
@@ -219,7 +235,6 @@ void setupPN()
   {
     for (j=0;j<rows;j++)
     {
-    //print(cells[i][0]+" ");
       minValue=(cells[i][j]<minValue)?cells[i][j]:minValue;
       maxValue=(cells[i][j]>maxValue)?cells[i][j]:maxValue;
     }

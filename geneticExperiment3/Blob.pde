@@ -9,7 +9,7 @@ public class Blob implements Comparable<Blob>
   
   private boolean mRunning=true;
   int mFitness=0;
-  int numGenes=15;
+  int numGenes=30;
 
   public String toString()
   {
@@ -116,7 +116,6 @@ public class Blob implements Comparable<Blob>
         // reset the segment count to something sane now we're done with this loop
         mPath.mCurrentSegment=0;
         stopRunning();
-              print(".");
         
         // Return false to indicate we couldn't update the
         // position (indicating we're done)
