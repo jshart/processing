@@ -12,8 +12,8 @@ int w=640;
 int h=640;
 boolean drawFrameWork=false;
 boolean drawCities=true;
-boolean drawPerlinNoise=true;
-int suppressEarlyGens=10;
+boolean drawPerlinNoise=false;
+int suppressEarlyGens=0;
 
 
 Block obstacles[];
@@ -145,7 +145,7 @@ public void draw() {
       if (populations[k].mBlobs[i].isRunning())
       {
         //ellipse(blobs[i].x,blobs[i].y,10,5);
-        if (populations[k].mCurrentGen>suppressEarlyGens)
+        if (populations[k].mCurrentGen>=suppressEarlyGens)
         {
           point(populations[k].mBlobs[i].mMoving.mPosition.x,populations[k].mBlobs[i].mMoving.mPosition.y);
         }
