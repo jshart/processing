@@ -4,12 +4,14 @@ import java.util.Arrays;
 // geneticExperiment -*-> Population -*-> Blob -1-> Dna -*-> Gene
 
 int numObstacles=0;
-int numOfPops=20;
-int blobsPerPop=30;
-int maxGens=25;
+int numOfPops=30;
+int numOfCities=20;
+int blobsPerPop=15;
+int maxGens=15;
 int w=640;
 int h=640;
 boolean drawFrameWork=false;
+boolean drawCities=true;
 
 Block obstacles[];
 Block obstacle=new Block();
@@ -32,7 +34,7 @@ public void setup() {
   
   int i;
     
-  cities = new Loci(numOfPops,w,h);
+  cities = new Loci(numOfCities,w,h);
   
   populations = new Population[numOfPops];
   
@@ -41,7 +43,7 @@ public void setup() {
   stroke(255,0,0);
   for (i=0;i<numOfPops;i++)
   {
-    fromCity = cities.mLocus[i];
+    fromCity = cities.randomLocus(i);
     toCity = cities.randomLocus(i);
     populations[i]= new Population(blobsPerPop,maxGens,fromCity.location,toCity.location); 
     
@@ -50,6 +52,12 @@ public void setup() {
     if (drawFrameWork)
     {
       line(fromCity.location.x,fromCity.location.y,toCity.location.x,toCity.location.y);
+    }
+    
+    if (drawCities)
+    {
+      fill(255,0,0);
+      ellipse(populations[i].mStart.x,populations[i].mStart.y,10,10);
     }
   }
 
@@ -106,14 +114,10 @@ public void draw() {
       continue;
     }
     
-    if (drawFrameWork)
-    {
-      fill(255,0,0);
-      ellipse(populations[k].mStart.x,populations[k].mStart.y,10,10);
-    }
+
     
     //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue(),populations[k].getCurrentAlphaFixed());
-    stroke(255-(255/(populations[k].mCurrentGen+1)),255-(255/(populations[k].mCurrentGen+1)),255-(255/(populations[k].mCurrentGen+1)),populations[k].getCurrentAlphaFixed());
+    stroke(125-(125/(populations[k].mCurrentGen+1)),125-(125/(populations[k].mCurrentGen+1)),125-(125/(populations[k].mCurrentGen+1)),populations[k].getCurrentAlphaFixed());
 
     //stroke(populations[k].getCurrentRed(), populations[k].getCurrentGreen(),populations[k].getCurrentBlue());
 
@@ -224,8 +228,9 @@ void setupPN()
 }
 
 int waterLine=10;
-int treeLine=120;
+int treeLine=50;
 int climateStep=2;
+int mountainLine=150;
 
 void drawPN()
 {
@@ -254,7 +259,7 @@ void drawPN()
       {
         stroke(75+floor((float)mappedColour),75+floor((float)mappedColour),0);
       }
-      else if(mappedColour<220)
+      else if(mappedColour<mountainLine)
       {
         stroke(0,255-floor((float)mappedColour),0);
       }
