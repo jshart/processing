@@ -1,36 +1,56 @@
-int maxW=1200;
-int maxH=600;
+int maxW=1600;
+int maxH=1000;
 
 ArrayList<VorNode> vorNodes = new ArrayList<VorNode>();
 ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 
 int maxNodes=500;
-int maxClusters=20;
+int maxClusters=5;
 
 void setup()
 {
-  size(1200,600);
+  size(1600,1000);
   
   int i;
 
+  int x=0,y=0;
+  int cFactor=300;
   // Create some random centroid points...
+
   for(i=0;i<maxClusters;i++)
   {
-    clusters.add(new Cluster(floor(random(0,maxW)),floor(random(0,maxH))));
+    x=floor(random(0,maxW));
+    y=floor(random(0,maxH));
+    
+   /* x1=floor(random(0,(cFactor-(x%cFactor))));
+    y1=floor(random(0,(cFactor-(y%cFactor))));
+    x-=x1;
+    y-=y1;*/
+    
+    clusters.add(new Cluster(x,y));
   }
+
   
   // Create some random nodes, and then find which clusters they best match
   // and add them to the array
   VorNode v;
-  for(i=0;i<maxNodes;i++)
+  int range=16;
+  int j=0;
+  for (j=0;j<range;j++)
   {
-    v=new VorNode(floor(random(0,maxW)),floor(random(0,maxH)));
+  for(i=0;i<maxNodes/range;i++)
+  {
+    x=floor(random(0,(maxW/range)*j));
+    y=floor(random(0,(maxH/range)*j));
+    v=new VorNode(x,y);
+    
     v.findClusterCentroid(clusters);
     vorNodes.add(v);
   }
+  }
 }
 
-int noIterations=0;
+int numIterations=0;
 void draw()
 {
   int vs=vorNodes.size();
@@ -42,6 +62,11 @@ void draw()
   for(i=0;i<vs;i++)
   {
     vorNodes.get(i).draw();
+  }
+  
+  if (numIterations==1)
+  {
+    delay(5000);
   }
   
   // draw all the clusters and then refine + reset them
@@ -63,13 +88,13 @@ void draw()
     vorNodes.get(i).findClusterCentroid(clusters);
   }
   
-  delay(1250);
-  println("*** Iteration ==="+noIterations++);
+  delay(500);
+  println("*** Iteration ==="+numIterations++);
   
   // If we're no longer improving, stop looping...
   if (stillImproving==false)
   {
-    println("+++ Converged on best fit after "+noIterations+" iterations");
+    println("+++ Converged on best fit after "+numIterations+" iterations");
     noLoop();
   }
 }
