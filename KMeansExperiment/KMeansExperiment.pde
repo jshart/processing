@@ -4,6 +4,7 @@ int maxH=1000;
 ArrayList<VorNode> vorNodes = new ArrayList<VorNode>();
 ArrayList<Cluster> clusters = new ArrayList<Cluster>();
 
+// Change these to adjust number of nodes and desired clusters
 int maxNodes=500;
 int maxClusters=5;
 
@@ -14,7 +15,6 @@ void setup()
   int i;
 
   int x=0,y=0;
-  int cFactor=300;
   // Create some random centroid points...
 
   for(i=0;i<maxClusters;i++)
@@ -22,32 +22,39 @@ void setup()
     x=floor(random(0,maxW));
     y=floor(random(0,maxH));
     
-   /* x1=floor(random(0,(cFactor-(x%cFactor))));
-    y1=floor(random(0,(cFactor-(y%cFactor))));
-    x-=x1;
-    y-=y1;*/
-    
     clusters.add(new Cluster(x,y));
   }
 
   
   // Create some random nodes, and then find which clusters they best match
-  // and add them to the array
+  // and add them to the array, this code bias's the distribution left/up to
+  // right/bottom in order to make it more interesting.
   VorNode v;
   int range=16;
   int j=0;
   for (j=0;j<range;j++)
   {
-  for(i=0;i<maxNodes/range;i++)
+    for(i=0;i<maxNodes/range;i++)
+    {
+      x=floor(random(0,(maxW/range)*j));
+      y=floor(random(0,(maxH/range)*j));
+      v=new VorNode(x,y);
+      
+      v.findClusterCentroid(clusters);
+      vorNodes.add(v);
+    }
+  }
+  /* Use the below code for uniform random distribution
+  for(i=0;i<maxNodes;i++)
   {
-    x=floor(random(0,(maxW/range)*j));
-    y=floor(random(0,(maxH/range)*j));
+    x=floor(random(0,maxW));
+    y=floor(random(0,maxH));
     v=new VorNode(x,y);
     
     v.findClusterCentroid(clusters);
     vorNodes.add(v);
-  }
-  }
+  }*/
+
 }
 
 int numIterations=0;
@@ -63,7 +70,9 @@ void draw()
   {
     vorNodes.get(i).draw();
   }
-  
+
+  // put a delay in at the start so we get a few seconds
+  // to look at the field before it starts optimising
   if (numIterations==1)
   {
     delay(5000);
@@ -88,6 +97,8 @@ void draw()
     vorNodes.get(i).findClusterCentroid(clusters);
   }
   
+  // put a small delay inbetween each frame so we can see
+  // the changes.
   delay(500);
   println("*** Iteration ==="+numIterations++);
   
@@ -282,13 +293,7 @@ public class Cluster
     for (i=0;i<ms;i++)
     {
       v=memberNodes.get(i);
-      /*if (i==0)
-      {
-        minX=v.originX;
-        maxX=v.originX;
-        minY=v.originY;
-        maxY=v.originY;
-      }*/
+
       minX=(v.originX<minX?v.originX:minX);
       maxX=(v.originX>maxX?v.originX:maxX);
       minY=(v.originY<minY?v.originY:minY);
@@ -302,9 +307,5 @@ public class Cluster
     centroidY=averageY/ms;
     
     println("C:"+centroidX+","+centroidY+" MS:"+ms);
-    /*minX=(centroidX<minX?centroidX:minX);
-    maxX=(centroidX>maxX?centroidX:maxX);
-    minY=(centroidY<minY?centroidY:minY);
-    maxY=(centroidY>maxY?centroidY:maxY);*/
   }
 }
